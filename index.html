@@ -1133,7 +1133,7 @@
     <main class="page-layout" id="page-layout">
         <aside class="sidebar" id="module-sidebar" aria-label="Modules and progress">
         <div class="sidebar-header">
-                <span class="sidebar-title">Modules <span id="overall-progress">0 / 300</span></span>
+                <span class="sidebar-title">Modules <span id="overall-progress">0 / 365</span></span>
                 <button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-controls="modules-list" aria-expanded="true" aria-label="Collapse module list" title="Collapse module list">
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="m14.5 5-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -1175,6 +1175,7 @@
 
     <footer class="site-footer">Digital Logic Design · Interactive practice exam</footer>
 
+    <script src="mock-exam-data.js"></script>
     <script>
         const quizData = [
             {
@@ -1745,6 +1746,10 @@
                     { q: "What is RISC vs CISC processor architecture?", options: ["RISC uses simple fixed-length instructions; CISC uses complex variable-length instructions", "RISC is slower", "CISC has no RAM", "No difference"], correct: 0, hint: "RISC (ARM, RISC-V) and CISC (x86) represent distinct design philosophies." },
                     { q: "Why is hardware description language (HDL like Verilog or VHDL) used today?", options: ["To design, simulate, and synthesize complex digital circuits and FPGA hardware configs programmatically", "To write web pages", "To format documents", "To compile Python"], correct: 0, hint: "HDLs replaced manual schematic entry for modern ASIC and FPGA engineering." }
                 ]
+            },
+            {
+                title: "Mock Exam",
+                questions: window.mockExamQuestions
             }
         ];
 
@@ -1762,10 +1767,321 @@
             }
         }
 
+        const conciseAnswerOverrides = new Map([
+            ["What is Time-Division Multiplexing (TDM)?", "Time-slot multiplexing"],
+            ["What is dual-port RAM?", "Two-port memory"],
+            ["What is content-addressable memory (CAM)?", "Content-based lookup"],
+            ["What is a watchdog timer in microcontrollers?", "Software-hang reset"],
+            ["What is CPLD (Complex Programmable Logic Device)?", "Macrocell-based logic"],
+            ["What is Direct Memory Access (DMA)?", "Peripheral transfer without CPU"],
+            ["What is a Microcontroller (MCU)?", "Embedded computer"],
+            ["What is look-ahead carry in synchronous counters?", "Parallel carry generation"],
+            ["What is a bit-slice ALU architecture?", "Cascaded ALU slices"],
+            ["What is anti-fuse programming in FPGAs/PROMs?", "Permanent FPGA connection"],
+            ["What is CAN bus (Controller Area Network)?", "CAN bus network"],
+            ["What is an FPGA (Field-Programmable Gate Array)?", "Configurable logic fabric"],
+            ["What is SPI (Serial Peripheral Interface)?", "Synchronous four-wire bus"],
+            ["What is a multiplexer?", "Input selector"],
+            ["What is an RS-232 serial communication standard?", "Serial voltage interface"],
+            ["What is an interrupt service routine (ISR)?", "Interrupt-triggered routine"],
+            ["What is pulse-width modulation (PWM)?", "Pulse-width power control"],
+            ["What is Digital Signal Processing (DSP)?", "Signal-processing processor"],
+            ["What is serial adder architecture?", "One-bit-at-a-time adder"],
+            ["What is a stack memory in CPU architecture?", "LIFO call storage"],
+            ["What is a signature analyzer?", "LFSR signature tool"],
+            ["What is an Arithmetic Logic Unit (ALU)?", "Arithmetic and logic unit"],
+            ["What is an Analog-to-Digital Converter (ADC)?", "Voltage digitizer"],
+            ["What is multiplexer tree expansion?", "Cascading smaller MUXes"],
+            ["What is saturation arithmetic?", "Clamp overflow to limits"],
+            ["Why is hardware description language (HDL like Verilog or VHDL) used today?", "Digital hardware design"],
+            ["What is a digital comparator?", "Binary magnitude comparison"],
+            ["What is a PLA (Programmable Logic Array)?", "AND/OR logic array"],
+            ["What is a presettable counter?", "Parallel-loadable counter"],
+            ["What is a Linear Feedback Shift Register (LFSR)?", "XOR-feedback shift register"],
+            ["What is a General-Purpose Input/Output (GPIO) pin?", "Configurable digital I/O"],
+            ["What is asynchronous sequential logic?", "Unclocked logic"],
+            ["What is a universal shift register IC 74LS194 mode control capability?", "Load and shift modes"],
+            ["What is error-correcting code (ECC) memory?", "Hamming-code memory"],
+            ["What is a demultiplexer?", "One-input router"],
+            ["What is I2C (Inter-Integrated Circuit) protocol?", "Two-wire addressed serial bus"],
+            ["What is clock speed in a microprocessor?", "CPU clock frequency"],
+            ["What is memory interleaving?", "Parallel memory-bank access"],
+            ["What is a USB interface?", "Peripheral connection"],
+            ["What is an essential prime implicant?", "Essential minterm-covering term"],
+            ["What is fan-out in digital integrated circuits?", "Gate fan-out capacity"],
+            ["What is noise margin in digital logic families?", "Noise margin"],
+            ["What is propagation delay time ($t_{PLH}$ and $t_{PHL}$)?", "Propagation delay"],
+            ["What is a Schmitt trigger hysteresis?", "Hysteresis"],
+            ["What is Schmitt trigger hysteresis?", "Hysteresis"],
+            ["What is a bi-directional bus transceiver?", "Bus transceiver"],
+            ["What is a tristate buffer output state when disabled?", "High-Z"],
+            ["Why are decoupling capacitors placed across Vcc and GND on digital IC sockets?", "Filter transients and noise"],
+            ["What is an open-collector output configuration in TTL gates?", "Open-collector output"],
+            ["How do open-collector outputs implement wired logic?", "Wired-AND connection"],
+            ["What is the advantage of complex gates?", "Combine logic in one gate"],
+            ["What is a hazard in combinational logic circuits?", "Propagation-delay glitch"],
+            ["How can a static hazard be eliminated?", "Add consensus terms"],
+            ["What is a multiplexer?", "Input selector"],
+            ["What is a demultiplexer?", "One-input router"],
+            ["What is a minterm?", "Minterm"],
+            ["What are don't-care conditions?", "Don't-care condition"],
+            ["What is an essential prime implicant?", "Unique minterm cover"],
+            ["What is the Quine-McCluskey method?", "Quine-McCluskey minimization"],
+            ["What is a literal in Boolean algebra?", "Literal"],
+            ["What is Flash memory?", "Block-erased EEPROM"],
+            ["What is EEPROM?", "Electrically erasable ROM"],
+            ["What distinguishes SRAM from DRAM?", "SRAM latches; DRAM refreshes"],
+            ["What is the primary difference between RAM and ROM?", "RAM volatile; ROM nonvolatile"],
+            ["What is the purpose of Chip Select (CS) or Chip Enable (CE) pins on memory chips?", "Enables a memory chip"],
+            ["Why is SRAM used for CPU cache memory instead of DRAM?", "SRAM is faster; no refresh"],
+            ["What is memory bandwidth?", "Memory data-transfer rate"],
+            ["What is the modulus of a counter?", "Number of states per cycle"],
+            ["What is the \"modulus\" of a counter?", "Number of states per cycle"],
+            ["What is a decoder circuit designed to do?", "Activates one selected output"],
+            ["What is the fundamental difference between combinational and sequential logic?", "Sequential logic stores state"],
+            ["What is a Mealy state machine?", "Outputs depend on state and inputs"],
+            ["What is a Moore state machine?", "Outputs depend only on state"],
+            ["What is a multiplexer (MUX)?", "Selects one input for output"],
+            ["What is the primary function of a multiplexer (MUX)?", "Selects one input for output"],
+            ["What is a decade counter (Mod-10)?", "Ten states: 0 through 9"],
+            ["What is a Johnson counter (twisted-ring counter)?", "Inverted last-bit feedback"],
+            ["What distinguishes a synchronous counter from an asynchronous counter?", "All stages share one clock"],
+            ["What is a Linear Feedback Shift Register (LFSR) commonly used for?", "Pseudorandom and CRC generation"],
+            ["What is the storage capacity of a memory IC with 12 address lines (A0-A11) and 8 data lines?", "4096 bytes (4 KB)"],
+            ["What is a decoder circuit designed to do?", "Converts code to one output"],
+            ["What is a hazard in combinational logic circuits?", "Temporary output glitch"],
+            ["What is setup time in a flip-flop?", "Data stable before clock"],
+            ["What is the main advantage of edge-triggering over level-triggering?", "Samples at the clock edge"],
+            ["What is the primary function of a shift register?", "Stores and shifts data bits"],
+            ["What is a universal shift register?", "Serial/parallel, bidirectional modes"],
+            ["What is the main limitation of standard encoders compared to priority encoders?", "Cannot resolve simultaneous inputs"],
+            ["What is the function of IC 74LS148?", "Priority encoder"],
+            ["What is a lookup table (LUT) implemented with multiplexers or ROMs?", "Precomputed logic lookup"],
+            ["What is BCD (Binary-Coded Decimal)?", "Four-bit decimal digits"],
+            ["Why are active-low control pins common in vintage TTL ICs?", "Open-collector, active-low signaling"],
+            ["What does the 'Ripple Blanking' (RBI/RBO) feature do on display drivers?", "Blanks leading or trailing zeros"],
+            ["What is an encoder used for?", "Converts an active input to binary"],
+            ["What is active-low logic convention?", "Asserted by LOW voltage"],
+            ["What is code conversion in digital systems?", "Translation between binary codes"],
+            ["What is a priority encoder?", "Selects the highest-priority input"],
+            ["What is a primary function of a multiplexer?", "Selects one input for output"],
+            ["What distinguishes a synchronous counter from an asynchronous counter?", "All stages share one clock"],
+            ["What is a decade counter (Mod-10)?", "Ten states: 0 through 9"],
+            ["What is a Johnson counter (twisted-ring counter)?", "Inverted last-bit feedback"],
+            ["Why is the all-zeros state forbidden in standard maximal-length XOR LFSRs?", "All-zero XOR lockup"],
+            ["How many prime implicants are in a minimal cover if all are essential?", "All essential terms are included"],
+            ["What is Quine-McCluskey method used for?", "Boolean minimization"],
+            ["What is open-collector output configuration in TTL gates?", "Open-collector output"],
+            ["What is Direct Memory Access (DMA)?", "Direct peripheral transfer"],
+            ["What is look-ahead carry in synchronous counters?", "Parallel carry"],
+            ["What is an FPGA (Field-Programmable Gate Array)?", "Programmable logic fabric"],
+            ["What is an interrupt service routine (ISR)?", "Interrupt service routine"],
+            ["What is an RS-232 serial communication standard?", "Serial voltage link"],
+            ["What is serial adder architecture?", "Bit-serial adder"],
+            ["What is a digital comparator?", "Binary comparator"],
+            ["What is Harvard architecture?", "Separate code/data paths"],
+            ["What is a Linear Feedback Shift Register (LFSR)?", "XOR shift register"],
+            ["What is a universal shift register?", "Multiple shift/load modes"],
+            ["How does a carry-lookahead adder (CLA) speed up addition?", "Parallel carry computation"],
+            ["What is a Logical Shift vs Arithmetic Shift?", "Zero-fill vs sign-preserving shift"],
+            ["What is dynamic RAM refresh cycle?", "Periodic DRAM refresh"],
+            ["What is address decoding in computer systems?", "Selects chips from address values"],
+            ["What is the purpose of interrupt handling in computer systems?", "CPU pauses for urgent events"],
+            ["What is mask ROM?", "Factory-programmed ROM"],
+            ["What is a PLA (Programmable Logic Array)?", "Programmable logic array"],
+            ["What is state lockout in counters?", "Stuck in invalid state"],
+            ["What is RISC vs CISC processor architecture?", "RISC simple; CISC complex"],
+            ["How do you achieve a Mod-6 counter using a Mod-8 binary counter?", "Reset the counter at state 6"],
+            ["What is excitation table used for in sequential circuit design?", "FF inputs for state changes"],
+            ["What is synchronous binary up/down counter design method?", "Logic sets next state"],
+            ["What is code conversion in digital systems?", "Binary code translation"],
+            ["What is state reduction in sequential design?", "Fewer equivalent FSM states"],
+            ["What is a key application of shift registers in arithmetic logic units?", "Bit-shift arithmetic"],
+            ["Why is carry-skip (block carry-skip) adder used?", "Block carry bypass"],
+            ["What is a Digital-to-Analog Converter (DAC)?", "Digital to analog"],
+            ["How do you cure state lockout in counter designs?", "Reset invalid states"],
+            ["What is PISO (Parallel-In, Serial-Out) used for?", "Parallel data to serial"],
+            ["What is a BCD adder circuit used for?", "BCD digit addition"],
+            ["What is the purpose of the Mode control pin in a 7483-based adder/subtractor circuit?", "Selects addition or subtraction"],
+            ["What is clock skew in synchronous digital systems?", "Clock arrival-time difference"],
+            ["What is a bidirectional shift register control mode?", "Direction control"],
+            ["What is a barrel shifter?", "One-cycle variable shift"],
+            ["Why is minimization important in digital logic design?", "Reduce gates, delay, and power"],
+            ["How do you implement any Boolean function of n variables using a MUX?", "Truth table mapped to MUX"],
+            ["What is serial binary division circuit structure?", "Shift-and-subtract logic"],
+            ["What is a PLC (Programmable Logic Controller)?", "Industrial automation controller"],
+            ["What is Hamming code used for?", "Single-bit correction code"],
+            ["What is the difference between common anode and common cathode 7-segment displays?", "Anode to Vcc; cathode to ground"],
+            ["What is pulse-triggered (master-slave) latch operation?", "Two-phase sample-and-hold"],
+            ["What is a GAL (Generic Array Logic)?", "Reprogrammable PAL"],
+            ["What is metastability in digital circuits?", "Output between stable 0 and 1"],
+            ["What is an asynchronous clear input on a counter IC?", "Resets counter without clock"],
+            ["What is ripple-carry delay in multi-bit adders?", "Ripple carry delay"],
+            ["What is floating-point arithmetic hardware (FPU)?", "IEEE 754 math unit"],
+            ["What is a Schmitt trigger used for?", "Cleans noisy or slow edges"],
+            ["What is a bus in computer hardware?", "Shared communication path"],
+            ["What is Idempotent Law?", "A + A = A; A*A = A"],
+            ["How many prime implicants are in a minimal cover if all are essential?", "Essential PI count"],
+            ["What is the purpose of enable inputs on decoder ICs?", "Expand or enable decoding"],
+            ["What is an ASCII-to-Baudot code converter?", "Teleprinter code translator"],
+            ["What is an encoder used for?", "Input-to-binary code"],
+            ["What is a lookup table (LUT) implemented with multiplexers or ROMs?", "Logic lookup"],
+            ["Why are active-low control pins common in vintage TTL ICs?", "TTL transistor pull-downs"],
+            ["What does the 'Ripple Blanking' (RBI/RBO) feature do on display drivers?", "Zero suppression"],
+            ["What is clock jitter?", "Clock timing variation"],
+            ["What is the purpose of asynchronous inputs like Preset (PR) and Clear (CLR)?", "Asynchronous set/reset"],
+            ["What is hold time?", "Post-clock data stability"],
+            ["What is static RAM cell structure built from?", "Cross-coupled inverters"],
+            ["What is race-around condition in J-K flip-flops?", "Repeated output toggling"],
+            ["What is synchronous sequential logic?", "Clock-driven state changes"],
+            ["Which logic element forms the basic cross-coupled storage cell of an S-R latch?", "Cross-coupled NOR/NAND gates"],
+            ["What is a Schmitt trigger used for?", "Cleans noisy or slow edges"],
+            ["What is excitation table used for in sequential circuit design?", "FF inputs for next state"],
+            ["Analyze the timing diagram for a positive edge-triggered D flip-flop below. What output Q is sampled at clock transition edge 2?", "Q becomes HIGH at edge 2"],
+            ["What is clock skew in synchronous digital systems?", "Clock arrival mismatch"],
+            ["What is edge-triggering in flip-flops?", "Clock-edge triggering"],
+            ["What is the main advantage of SIPO (Serial-In, Parallel-Out)?", "Serial-in to parallel-out"],
+            ["How is serial data converted to parallel data?", "Serial-to-parallel"],
+            ["What is a UART primarily used for?", "Asynchronous serial transfer"],
+            ["What is a bidirectional shift register control mode?", "Direction control"],
+            ["What is an Arithmetic Left Shift equivalent to?", "Multiply by two"],
+            ["What is overflow in signed binary arithmetic?", "Result outside signed range"],
+            ["Why is a full adder required instead of a half adder for multi-bit addition?", "Handles carry-in"],
+            ["What is a barrel shifter used for in ALUs?", "Multi-bit shifting"],
+            ["When adding two numbers in 2's complement, what indicates no overflow?", "Equal sign-bit carries"],
+            ["What is a Logical Shift vs Arithmetic Shift?", "Zero-fill vs sign extension"],
+            ["What is Booth's algorithm used for?", "Signed multiplication"],
+            ["What is an Arithmetic Right Shift equivalent to?", "Signed divide by two"],
+            ["How does a binary multiplier work using combinational logic?", "Partial products via AND gates"],
+            ["What is NVSRAM (Non-Volatile SRAM)?", "SRAM with backup"],
+            ["What does DRAM stand for, and why does it need refreshing?", "Dynamic RAM needs refresh"],
+            ["What is an FPGA (Field-Programmable Gate Array)?", "Programmable logic"],
+            ["What is core memory (historical)?", "Magnetic-core storage"],
+            ["What is a PROM?", "One-time programmable ROM"],
+            ["What is a PLA (Programmable Logic Array)?", "AND/OR array"],
+            ["What is non-volatile memory (NVM)?", "Retains data unpowered"],
+            ["What does SRAM stand for, and what is its key feature?", "Latch-based static RAM"],
+            ["What is a PAL (Programmable Array Logic)?", "Programmable AND array"],
+            ["What distinguishes EPROM from PROM?", "UV-erasable ROM"],
+            ["What is optical storage (CD, DVD, Blu-ray)?", "Laser-read media"],
+            ["What is UART used for in computer systems?", "Serial communication"],
+            ["What is memory-mapped I/O?", "I/O in memory address space"],
+            ["What is RISC vs CISC processor architecture?", "Simple vs complex ISA"],
+            ["What causes glitches in asynchronous ripple counters?", "Cascaded ripple delay"],
+            ["What is the primary function of a digital counter?", "Counts clock pulses"],
+            ["Which of the following is NOT a common task for a counter?", "Serial conversion"],
+            ["How many prime implicants are in a minimal cover if all are essential?", "PI count"],
+            ["What is an ASCII-to-Baudot code converter?", "Code translator"],
+            ["Which logic element forms the basic cross-coupled storage cell of an S-R latch?", "NOR/NAND latch"],
+            ["What is a Schmitt trigger used for?", "Clean noisy edges"],
+            ["What is static RAM cell structure built from?", "SRAM latch"],
+            ["What is the 'modulus' (Mod) of a counter?", "States per cycle"],
+            ["Why are synchronous counters preferred in high-speed applications?", "No ripple delay"],
+            ["What causes 'glitches' in asynchronous counters?", "Cascaded delay glitches"],
+            ["What is frequency division using counters?", "Divide clock by N"],
+            ["What is a bidirectional counter?", "Up/down counter"],
+            ["What is truncation in counters?", "Custom count range"],
+            ["What is a ring counter?", "One-hot ring counter"],
+            ["What is ripple blanking in counter-driven displays?", "Suppress leading zeros"],
+            ["What is parallel data transmission?", "Simultaneous bit transfer"],
+            ["What is a scratchpad memory?", "Fast temporary memory"],
+            ["How is serial data converted to parallel data?", "Serial-to-parallel"],
+            ["What is a shift register sequence generator?", "LFSR bit sequence"],
+            ["What is a switch-tail ring counter (Johnson counter)?", "Johnson shift counter"],
+            ["How is parallel data converted to serial data?", "Parallel-to-serial shift"],
+            ["What is a recirculating shift register?", "Feedback data loop"]
+        ]);
+
+        const conciseAnswerTextOverrides = new Map([
+            ["To ensure a definite HIGH state (Vcc) when the switch is open", "Defined HIGH input state"],
+            ["Maximum number of standard inputs a gate output can reliably drive", "Gate fan-out capacity"],
+            ["Maximum noise voltage that can be tolerated without incorrect state transitions", "Noise margin"],
+            ["Time delay between input signal change and corresponding output change", "Propagation delay"],
+            ["Time delay between input change and output response", "Propagation delay"],
+            ["Having two different threshold voltages for rising and falling input edges", "Hysteresis"],
+            ["A circuit allowing data transmission in both directions between two buses", "Bus transceiver"],
+            ["RC time constant and capacitive charging", "RC charging response"],
+            ["To filter out high-frequency voltage transients and noise spikes", "Filter transients and noise"],
+            ["Any logic function can be implemented using only them", "Universal gates"],
+            ["Provide current amplification / isolation without inversion", "Non-inverting buffer"],
+            ["Output transistor collector is left unconnected internally, requiring an external pull-up resistor", "Open-collector output"],
+            ["Connecting open-collector/open-drain outputs together to perform logic AND function externally", "Wired-AND outputs"],
+            ["Reduces gate count and propagation delay by combining logic in single complex gates", "Fewer gates and less delay"],
+            ["Unwanted temporary glitches or spikes in output caused by unequal propagation delays", "Propagation-delay glitch"],
+            ["By adding redundant product terms (consensus terms) that cover the transition boundary", "Add consensus terms"],
+            ["Data selector that routes one of multiple input lines to a single output line based on select lines", "Input selector"],
+            ["Circuit that takes a single input and routes it to one of 2^n outputs based on select lines", "One-input output router"],
+            ["A product term containing all variables in true or complemented form", "Minterm"],
+            ["An input combination that never occurs or output doesn't matter", "Don't-care condition"],
+            ["Equal to the minimum sum of products terms needed", "Minimum SOP term count"],
+            ["A prime implicant that covers at least one minterm not covered by any other prime implicant", "Essential prime implicant"],
+            ["Systematic tabular minimization of Boolean functions with many variables (>4)", "Quine-McCluskey minimization"],
+            ["A variable or its complement (e.g., A or A')", "Literal"],
+            ["Treat them as 0s to form maxterm groups, or 1s if unneeded", "Use as 0s or don't-cares"],
+            ["To reduce gate count, propagation delay, power consumption, and manufacturing cost", "Reduce gates, delay, power, and cost"],
+            ["Convert binary code to a set of active outputs (e.g., 1-of-N)", "Activate one-of-N outputs"],
+            ["Routes one of many input lines to a single output line based on select lines", "Selects one input for output"],
+            ["A finite state machine where outputs depend on current state AND present inputs", "Outputs depend on state and inputs"],
+            ["A finite state machine where outputs depend solely on the current state", "Outputs depend only on state"],
+            ["A counter that counts through 10 states (0 through 9) before recycling", "Ten states: 0 through 9"],
+            ["A shift register with inverted feedback from the last output back to the serial input", "Inverted last-bit feedback"],
+            ["Because XOR feedback with all zeros yields zero permanently (lockup)", "All-zero XOR lockup"],
+            ["RAM is volatile (lost on power-off); ROM is non-volatile (permanent)", "RAM volatile; ROM nonvolatile"],
+            ["SRAM uses flip-flop latches and needs no refresh; DRAM uses capacitors and requires periodic refreshing", "SRAM latches; DRAM refreshes"],
+            ["Electrically Erasable Programmable ROM; can be erased and rewritten electrically", "Electrically erasable ROM"],
+            ["A type of EEPROM that is erased and programmed in large block sectors", "Block-erased EEPROM"],
+            ["To enable or disable the specific memory chip in multi-chip memory arrays", "Enables a memory chip"],
+            ["SRAM is significantly faster (no refresh latency)", "SRAM is faster; no refresh"],
+            ["The rate at which data can be read from or stored into memory", "Memory data-transfer rate"],
+            ["The number of different states in its counting cycle", "Number of states per cycle"]
+        ]);
+
+        function balanceCorrectOption(qData) {
+            if (qData.fullCorrectAnswer) return;
+
+            const correctAnswer = qData.options[qData.correct];
+            const longestDistractorLength = Math.max(
+                ...qData.options.filter((_, index) => index !== qData.correct).map(option => option.length)
+            );
+            if (correctAnswer.length <= longestDistractorLength + 12) return;
+
+            qData.fullCorrectAnswer = correctAnswer;
+            const targetLength = longestDistractorLength + 8;
+            const mappedAnswer = conciseAnswerOverrides.get(qData.q)
+                || conciseAnswerTextOverrides.get(correctAnswer);
+            const hintSummary = (qData.rationale || qData.hint || '')
+                .replace(/\s*\([^)]*\)/g, '')
+                .split(/[.;]/)[0]
+                .replace(/\s+/g, ' ')
+                .trim();
+            let compactAnswer = mappedAnswer && mappedAnswer.length <= targetLength
+                ? mappedAnswer
+                : hintSummary && hintSummary.length <= targetLength && hintSummary.length < correctAnswer.length
+                    ? hintSummary
+                    : correctAnswer
+                .replace(/\s*\([^)]*\)/g, '')
+                .replace(/\s+(?:e\.g\.|for example|such as)\b[\s\S]*$/i, '')
+                .replace(/^(?:a|an|the)\s+/i, '')
+                .replace(/\b(?:a type of|a kind of|the process of|the rate at which)\s+/gi, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+
+            if (compactAnswer.length > targetLength) {
+                const shortened = compactAnswer.slice(0, targetLength + 1);
+                const wordBoundary = shortened.lastIndexOf(' ');
+                if (wordBoundary > 0) {
+                    compactAnswer = shortened.slice(0, wordBoundary).replace(/[ ,;:.]+$/, '') + '…';
+                }
+            }
+
+            qData.options[qData.correct] = compactAnswer;
+        }
+
         function randomizeModule(moduleData) {
             shuffleArray(moduleData.questions);
             moduleData.questions.forEach(qData => {
                 if (!qData.choices) {
+                    balanceCorrectOption(qData);
                     qData.choices = qData.options.map((text, index) => ({
                         text,
                         isCorrect: index === qData.correct
@@ -1907,7 +2223,8 @@
                 const heading = document.createElement('strong');
                 heading.textContent = 'Rationale & Explanation';
                 const explanation = document.createElement('p');
-                explanation.textContent = `Your answer is ${savedAnswer.isCorrect ? 'correct' : 'incorrect'}. Correct answer: ${qData.choices[qData.correct].text}. ${qData.rationale || qData.hint}`;
+                const fullAnswer = qData.fullCorrectAnswer ? `Full correct answer: ${qData.fullCorrectAnswer}. ` : '';
+                explanation.textContent = `Your answer is ${savedAnswer.isCorrect ? 'correct' : 'incorrect'}. Correct answer: ${qData.choices[qData.correct].text}. ${fullAnswer}${qData.rationale || qData.hint || ''}`;
                 hintBox.append(heading, explanation);
                 hintBox.style.display = 'block';
             } else {
