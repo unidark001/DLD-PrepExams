@@ -974,6 +974,133 @@
             }
         }
 
+        .modules-list {
+            scrollbar-color: var(--scrollbar-thumb, #aab5bf) var(--scrollbar-track, #e8edf2);
+        }
+
+        .modules-list::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .modules-list::-webkit-scrollbar-track {
+            border-radius: 999px;
+            background: var(--scrollbar-track, #e8edf2);
+        }
+
+        .modules-list::-webkit-scrollbar-thumb {
+            border: 2px solid var(--scrollbar-track, #e8edf2);
+            border-radius: 999px;
+            background: var(--scrollbar-thumb, #aab5bf);
+        }
+
+        body[data-theme="dark"] {
+            --scrollbar-track: #101d30;
+            --scrollbar-thumb: #38536e;
+        }
+
+        body[data-theme="light"] {
+            --scrollbar-track: #e8edf2;
+            --scrollbar-thumb: #aab5bf;
+        }
+
+        .visual-container svg {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .question-shell.question-enter-next {
+            animation: question-enter-next 240ms ease-out both;
+        }
+
+        .question-shell.question-enter-previous {
+            animation: question-enter-previous 240ms ease-out both;
+        }
+
+        .question-shell.question-enter-module {
+            animation: question-enter-module 280ms ease-out both;
+        }
+
+        .question-shell.question-enter-answer {
+            animation: question-enter-answer 180ms ease-out both;
+        }
+
+        @keyframes question-enter-next {
+            from { opacity: 0.5; transform: translateX(18px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes question-enter-previous {
+            from { opacity: 0.5; transform: translateX(-18px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes question-enter-module {
+            from { opacity: 0.5; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes question-enter-answer {
+            from { opacity: 0.7; }
+            to { opacity: 1; }
+        }
+
+        .option-btn.correct.answer-reveal {
+            animation: answer-correct 380ms ease-out both;
+        }
+
+        .option-btn.incorrect.answer-reveal {
+            animation: answer-incorrect 380ms ease-out both;
+        }
+
+        @keyframes answer-correct {
+            0% { transform: scale(0.985); }
+            65% { transform: scale(1.015); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes answer-incorrect {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-4px); }
+            50% { transform: translateX(4px); }
+            75% { transform: translateX(-2px); }
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+        }
+
+        .option-btn.correct .option-letter,
+        .option-btn.incorrect .option-letter {
+            width: 26px;
+            height: 26px;
+            border-color: transparent;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .option-btn.correct .option-letter {
+            background: #259b71;
+        }
+
+        .option-btn.incorrect .option-letter {
+            background: #d94f68;
+        }
+
+        .hint-container strong {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--accent-hover);
+            font-size: 12px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .hint-container p {
+            margin: 0;
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *,
             *::before,
@@ -1032,7 +1159,7 @@
                             <h2 class="question-text" id="question-text">Loading question...</h2>
                             <div id="visual-container" class="visual-container" style="display: none;"></div>
                             <div class="options-container" id="options-container"></div>
-                            <div class="hint-container" id="hint-container"></div>
+                            <div class="hint-container" id="hint-container" aria-live="polite"></div>
                         </div>
                     </div>
                 </section>
@@ -1064,7 +1191,6 @@
                             <path d="M 30 90 L 90 90 L 120 30 L 200 30 L 230 90 L 310 90 L 340 30" fill="none" stroke="#3b82f6" stroke-width="3"/>
                             <!-- Indicator -->
                             <circle cx="120" cy="60" r="5" fill="#ef4444"/>
-                            <text x="135" y="55" fill="#f3f4f6" font-size="12">Positive Edge Transition</text>
                         </svg>`,
                         options: ["Falling edge", "Rising edge", "High level steady state", "Low level steady state"], 
                         correct: 1, 
@@ -1088,7 +1214,6 @@
                             <line x1="20" y1="80" x2="330" y2="80" stroke="#9ca3af" stroke-width="2"/>
                             <!-- RC Exponential rise/fall -->
                             <path d="M 30 80 L 80 80 Q 110 80, 110 40 L 170 40 Q 170 80, 200 80 L 280 80 Q 310 80, 310 40" fill="none" stroke="#f59e0b" stroke-width="3"/>
-                            <text x="70" y="25" fill="#f3f4f6" font-size="12">Capacitive Charging & RC Time Constant</text>
                         </svg>`,
                         options: ["RC time constant and capacitive charging", "Inductive voltage spike", "Clock jitter", "Short circuit"], 
                         correct: 0, 
@@ -1115,15 +1240,20 @@
                 questions: [
                     { 
                         q: "Analyze the combinational gate network below. What is the Boolean expression for output Y?", 
-                        visual: `<svg width="320" height="120" viewBox="0 0 320 120">
-                            <!-- Inputs -->
-                            <text x="10" y="30" fill="#3b82f6" font-size="14">A</text>
-                            <text x="10" y="90" fill="#3b82f6" font-size="14">B</text>
-                            <!-- AND Gate 1 -->
-                            <path d="M 60 15 L 100 15 C 120 15, 130 25, 130 40 C 130 55, 120 65, 100 65 L 60 65 Z" fill="#1f2937" stroke="#3b82f6" stroke-width="2"/>
-                            <!-- OR Gate -->
-                            <path d="M 170 30 L 210 30 C 235 30, 245 45, 255 60 C 245 75, 235 90, 210 90 L 170 90 C 190 75, 190 45, 170 30 Z" fill="#1f2937" stroke="#10b981" stroke-width="2"/>
-                            <text x="270" y="65" fill="#f3f4f6" font-size="14">Y</text>
+                        visual: `<svg width="390" height="140" viewBox="0 0 390 140" role="img" aria-label="Three-input logic circuit with an AND gate feeding an OR gate">
+                            <text x="10" y="34" fill="#3b82f6" font-size="14">A</text>
+                            <text x="10" y="73" fill="#3b82f6" font-size="14">B</text>
+                            <text x="10" y="119" fill="#3b82f6" font-size="14">C</text>
+                            <line x1="28" y1="30" x2="70" y2="30" stroke="#3b82f6" stroke-width="2"/>
+                            <line x1="28" y1="69" x2="70" y2="69" stroke="#3b82f6" stroke-width="2"/>
+                            <path d="M 70 18 L 112 18 C 138 18 152 30 152 50 C 152 70 138 82 112 82 L 70 82 Z" fill="#1f2937" stroke="#3b82f6" stroke-width="2"/>
+                            <line x1="152" y1="50" x2="188" y2="50" stroke="#3b82f6" stroke-width="2"/>
+                            <line x1="188" y1="50" x2="210" y2="40" stroke="#3b82f6" stroke-width="2"/>
+                            <line x1="28" y1="114" x2="188" y2="114" stroke="#10b981" stroke-width="2"/>
+                            <line x1="188" y1="114" x2="210" y2="82" stroke="#10b981" stroke-width="2"/>
+                            <path d="M 210 25 L 256 25 C 282 25 300 40 315 62 C 300 84 282 99 256 99 L 210 99 C 228 81 228 43 210 25 Z" fill="#1f2937" stroke="#10b981" stroke-width="2"/>
+                            <line x1="315" y1="62" x2="355" y2="62" stroke="#10b981" stroke-width="2"/>
+                            <text x="361" y="67" fill="var(--text-color)" font-size="14">Y</text>
                         </svg>`,
                         options: ["Y = A · B + C", "Y = (A + B) · C", "Y = A ⊕ B", "Y = (A · B)'"], 
                         correct: 0, 
@@ -1149,7 +1279,7 @@
                             <text x="10" y="30" fill="#3b82f6" font-size="12">A=1, B=0</text>
                             <text x="10" y="70" fill="#3b82f6" font-size="12">C=1</text>
                             <path d="M 80 20 L 130 20 C 150 20, 160 35, 160 50 C 160 65, 150 80, 130 80 L 80 80 Z" fill="#1f2937" stroke="#3b82f6" stroke-width="2"/>
-                            <text x="95" y="55" fill="#f3f4f6" font-size="12">XOR Tree</text>
+                            <text x="95" y="55" fill="var(--text-color)" font-size="12">XOR Tree</text>
                         </svg>`,
                         options: ["Output = 0 (Even parity)", "Output = 1 (Odd parity)", "High-Z", "Undefined"], 
                         correct: 0, 
@@ -1246,11 +1376,27 @@
                     { q: "What is the BCD code for decimal 9?", options: ["1001", "1111", "1000", "0111"], correct: 0, hint: "9 in binary is 1001." },
                     { 
                         q: "Analyze the 74LS138 3-to-8 decoder schematic block. If select inputs CBA = 101₂ and active-low enable pins are G1=1, G2A'=0, G2B'=0, which output pin is active (LOW)?", 
-                        visual: `<svg width="300" height="100" viewBox="0 0 300 100">
-                            <rect x="70" y="10" width="160" height="80" fill="#1f2937" stroke="#3b82f6" stroke-width="2" rx="5"/>
-                            <text x="110" y="55" fill="#f3f4f6" font-size="14">74LS138 Decoder</text>
-                            <text x="15" y="30" fill="#3b82f6" font-size="12">CBA=101</text>
-                            <text x="240" y="55" fill="#10b981" font-size="12">Y5' active</text>
+                        visual: `<svg width="380" height="180" viewBox="0 0 380 180" role="img" aria-label="Three-to-eight decoder with eight unhighlighted active-low outputs">
+                            <rect x="100" y="20" width="150" height="140" fill="#1f2937" stroke="#3b82f6" stroke-width="2" rx="5"/>
+                            <text x="126" y="94" fill="var(--text-color)" font-size="13">3-to-8 decoder</text>
+                            <text x="18" y="94" fill="#3b82f6" font-size="12">CBA = 101</text>
+                            <line x1="76" y1="90" x2="100" y2="90" stroke="#3b82f6" stroke-width="2"/>
+                            <line x1="250" y1="34" x2="278" y2="34" stroke="#10b981" stroke-width="1.5"/>
+                            <line x1="250" y1="50" x2="278" y2="50" stroke="#10b981" stroke-width="1.5"/>
+                            <line x1="250" y1="66" x2="278" y2="66" stroke="#10b981" stroke-width="1.5"/>
+                            <line x1="250" y1="82" x2="278" y2="82" stroke="#10b981" stroke-width="1.5"/>
+                            <line x1="250" y1="98" x2="278" y2="98" stroke="#10b981" stroke-width="1.5"/>
+                            <line x1="250" y1="114" x2="278" y2="114" stroke="#10b981" stroke-width="1.5"/>
+                            <line x1="250" y1="130" x2="278" y2="130" stroke="#10b981" stroke-width="1.5"/>
+                            <line x1="250" y1="146" x2="278" y2="146" stroke="#10b981" stroke-width="1.5"/>
+                            <text x="284" y="37" fill="#10b981" font-size="11">Y0'</text>
+                            <text x="284" y="53" fill="#10b981" font-size="11">Y1'</text>
+                            <text x="284" y="69" fill="#10b981" font-size="11">Y2'</text>
+                            <text x="284" y="85" fill="#10b981" font-size="11">Y3'</text>
+                            <text x="284" y="101" fill="#10b981" font-size="11">Y4'</text>
+                            <text x="284" y="117" fill="#10b981" font-size="11">Y5'</text>
+                            <text x="284" y="133" fill="#10b981" font-size="11">Y6'</text>
+                            <text x="284" y="149" fill="#10b981" font-size="11">Y7'</text>
                         </svg>`,
                         options: ["Y5' (Pin active LOW)", "Y3'", "Y6'", "Y0'"], 
                         correct: 0, 
@@ -1299,9 +1445,8 @@
                             <!-- D input -->
                             <text x="10" y="65" fill="#f59e0b" font-size="12">D</text>
                             <path d="M 40 75 L 110 75 L 110 55 L 320 55" fill="none" stroke="#f59e0b" stroke-width="2"/>
-                            <!-- Q output -->
-                            <text x="10" y="95" fill="#10b981" font-size="12">Q</text>
-                            <path d="M 40 95 L 130 95 L 130 75 L 320 75" fill="none" stroke="#10b981" stroke-width="2"/>
+                            <line x1="190" y1="4" x2="190" y2="88" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="4 4"/>
+                            <text x="194" y="22" fill="var(--text-color)" font-size="11">edge 2</text>
                         </svg>`,
                         options: ["Q transitions to HIGH (1) at edge 2", "Q remains LOW (0)", "Q oscillates", "Q goes High-Z"], 
                         correct: 0, 
@@ -1396,10 +1541,10 @@
                         q: "Analyze the 4-bit serial-in parallel-out (SIPO) shift register schematic below. If input bit stream '1011' is shifted in with 4 clock pulses (LSB first), what is the parallel output $Q_3 Q_2 Q_1 Q_0$?", 
                         visual: `<svg width="340" height="100" viewBox="0 0 340 100">
                             <rect x="20" y="20" width="80" height="60" fill="#1f2937" stroke="#3b82f6" stroke-width="2"/>
-                            <text x="35" y="55" fill="#f3f4f6" font-size="12">FF0 (Q0)</text>
+                            <text x="35" y="55" fill="var(--text-color)" font-size="12">FF0 (Q0)</text>
                             <line x1="100" y1="50" x2="130" y2="50" stroke="#3b82f6" stroke-width="2"/>
                             <rect x="130" y="20" width="80" height="60" fill="#1f2937" stroke="#3b82f6" stroke-width="2"/>
-                            <text x="145" y="55" fill="#f3f4f6" font-size="12">FF1 (Q1)</text>
+                            <text x="145" y="55" fill="var(--text-color)" font-size="12">FF1 (Q1)</text>
                             <text x="230" y="55" fill="#10b981" font-size="12">Shift Data Stream</text>
                         </svg>`,
                         options: ["1011₂", "1101₂", "0110₂", "0000₂"], 
@@ -1431,9 +1576,9 @@
                             <text x="10" y="30" fill="#3b82f6" font-size="12">A</text>
                             <text x="10" y="65" fill="#3b82f6" font-size="12">B</text>
                             <rect x="70" y="15" width="60" height="60" fill="#1f2937" stroke="#3b82f6" stroke-width="2" rx="5"/>
-                            <text x="85" y="50" fill="#f3f4f6" font-size="14">XOR & AND</text>
+                            <text x="88" y="50" fill="var(--text-color)" font-size="14">Circuit</text>
                             <line x1="130" y1="45" x2="200" y2="45" stroke="#10b981" stroke-width="2"/>
-                            <text x="210" y="50" fill="#f3f4f6" font-size="12">Sum & Carry</text>
+                            <text x="210" y="50" fill="var(--text-color)" font-size="12">Sum & Carry</text>
                         </svg>`,
                         options: ["XOR for Sum, AND for Carry", "OR for Sum, NOT for Carry", "NAND only", "NOR and OR"], 
                         correct: 0, 
@@ -1457,9 +1602,9 @@
                         q: "Analyze the full adder block diagram below. If inputs are A=1, B=1, $C_{in}=1$, what are the resulting Sum and $C_{out}$ values?", 
                         visual: `<svg width="300" height="100" viewBox="0 0 300 100">
                             <rect x="70" y="15" width="160" height="70" fill="#1f2937" stroke="#3b82f6" stroke-width="2" rx="5"/>
-                            <text x="110" y="55" fill="#f3f4f6" font-size="14">Full Adder Cell</text>
+                            <text x="110" y="55" fill="var(--text-color)" font-size="14">Adder</text>
                             <text x="15" y="35" fill="#3b82f6" font-size="12">A=1, B=1, Cin=1</text>
-                            <text x="240" y="55" fill="#10b981" font-size="12">Sum=1, Cout=1</text>
+                            <text x="240" y="55" fill="#10b981" font-size="12">Outputs</text>
                         </svg>`,
                         options: ["Sum = 1, Cout = 1", "Sum = 0, Cout = 0", "Sum = 1, Cout = 0", "Sum = 0, Cout = 1"], 
                         correct: 0, 
@@ -1501,11 +1646,19 @@
                     { q: "Why is SRAM used for CPU cache memory instead of DRAM?", options: ["SRAM is significantly faster (no refresh latency)", "SRAM is much cheaper", "SRAM holds more data", "SRAM is non-volatile"], correct: 0, hint: "Speed is critical for CPU caches, making SRAM ideal despite higher cost." },
                     { 
                         q: "Analyze the memory decoding block diagram below. If a memory chip has 12 address lines ($A_0-A_{11}$) and 8 data output lines, what is its total storage capacity in bytes (or KB)?", 
-                        visual: `<svg width="320" height="100" viewBox="0 0 320 100">
-                            <rect x="70" y="15" width="180" height="70" fill="#1f2937" stroke="#3b82f6" stroke-width="2" rx="5"/>
-                            <text x="100" y="55" fill="#f3f4f6" font-size="14">Memory IC (12 Addr, 8 Data)</text>
-                            <text x="15" y="35" fill="#3b82f6" font-size="12">A0-A11 lines</text>
-                            <text x="260" y="55" fill="#10b981" font-size="12">4096 x 8 (4KB)</text>
+                        visual: `<svg width="360" height="150" viewBox="0 0 360 150" role="img" aria-label="Memory chip with address inputs and data outputs">
+                            <rect x="120" y="30" width="120" height="90" fill="#1f2937" stroke="#3b82f6" stroke-width="2" rx="5"/>
+                            <text x="153" y="79" fill="var(--text-color)" font-size="14">Memory</text>
+                            <text x="22" y="22" fill="#3b82f6" font-size="12">Address inputs</text>
+                            <text x="256" y="22" fill="#10b981" font-size="12">Data outputs</text>
+                            <line x1="55" y1="48" x2="120" y2="48" stroke="#3b82f6" stroke-width="2"/>
+                            <line x1="55" y1="65" x2="120" y2="65" stroke="#3b82f6" stroke-width="2"/>
+                            <line x1="55" y1="82" x2="120" y2="82" stroke="#3b82f6" stroke-width="2"/>
+                            <line x1="55" y1="99" x2="120" y2="99" stroke="#3b82f6" stroke-width="2"/>
+                            <line x1="240" y1="48" x2="305" y2="48" stroke="#10b981" stroke-width="2"/>
+                            <line x1="240" y1="65" x2="305" y2="65" stroke="#10b981" stroke-width="2"/>
+                            <line x1="240" y1="82" x2="305" y2="82" stroke="#10b981" stroke-width="2"/>
+                            <line x1="240" y1="99" x2="305" y2="99" stroke="#10b981" stroke-width="2"/>
                         </svg>`,
                         options: ["4096 bytes (4 KB)", "1024 bytes (1 KB)", "8192 bytes (8 KB)", "65536 bytes (64 KB)"], 
                         correct: 0, 
@@ -1547,13 +1700,31 @@
                     { q: "What is Harvard architecture?", options: ["Computer architecture with physically separate storage and signal pathways for instructions and data", "Single bus architecture", "Memory-less architecture", "Graphics-only architecture"], correct: 0, hint: "Harvard architecture separates instruction and data memory buses." },
                     { 
                         q: "Analyze the microcontroller system bus architecture diagram below. Which bus carries memory addresses generated by the CPU program counter?", 
-                        visual: `<svg width="340" height="100" viewBox="0 0 340 100">
-                            <rect x="20" y="20" width="80" height="60" fill="#1f2937" stroke="#3b82f6" stroke-width="2"/>
-                            <text x="40" y="55" fill="#f3f4f6" font-size="12">CPU</text>
-                            <line x1="100" y1="40" x2="220" y2="40" stroke="#f59e0b" stroke-width="2"/>
-                            <text x="130" y="30" fill="#f59e0b" font-size="12">Address Bus</text>
-                            <rect x="220" y="20" width="80" height="60" fill="#1f2937" stroke="#10b981" stroke-width="2"/>
-                            <text x="240" y="55" fill="#f3f4f6" font-size="12">Memory</text>
+                        visual: `<svg width="360" height="140" viewBox="0 0 360 140" role="img" aria-label="CPU and memory connected by three unlabeled bus lines">
+                            <defs>
+                                <marker id="bus-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                                    <path d="M 0 0 L 7 3.5 L 0 7 Z" fill="#f59e0b"/>
+                                </marker>
+                                <marker id="bus-arrow-start" markerWidth="7" markerHeight="7" refX="1" refY="3.5" orient="auto">
+                                    <path d="M 7 0 L 0 3.5 L 7 7 Z" fill="#10b981"/>
+                                </marker>
+                                <marker id="bus-arrow-end" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                                    <path d="M 0 0 L 7 3.5 L 0 7 Z" fill="#10b981"/>
+                                </marker>
+                                <marker id="control-arrow-start" markerWidth="7" markerHeight="7" refX="1" refY="3.5" orient="auto">
+                                    <path d="M 7 0 L 0 3.5 L 7 7 Z" fill="#3b82f6"/>
+                                </marker>
+                                <marker id="control-arrow-end" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                                    <path d="M 0 0 L 7 3.5 L 0 7 Z" fill="#3b82f6"/>
+                                </marker>
+                            </defs>
+                            <rect x="20" y="30" width="80" height="80" fill="#1f2937" stroke="#3b82f6" stroke-width="2" rx="4"/>
+                            <text x="43" y="76" fill="var(--text-color)" font-size="13">CPU</text>
+                            <rect x="260" y="30" width="80" height="80" fill="#1f2937" stroke="#10b981" stroke-width="2" rx="4"/>
+                            <text x="278" y="76" fill="var(--text-color)" font-size="12">Memory</text>
+                            <line x1="100" y1="50" x2="260" y2="50" stroke="#f59e0b" stroke-width="2" marker-end="url(#bus-arrow)"/>
+                            <line x1="100" y1="70" x2="260" y2="70" stroke="#10b981" stroke-width="2" marker-start="url(#bus-arrow-start)" marker-end="url(#bus-arrow-end)"/>
+                            <line x1="100" y1="90" x2="260" y2="90" stroke="#3b82f6" stroke-width="2" marker-start="url(#control-arrow-start)" marker-end="url(#control-arrow-end)"/>
                         </svg>`,
                         options: ["Address Bus ( unidirectional from CPU to Memory )", "Data Bus (bidirectional)", "Control Bus", "Power Bus"], 
                         correct: 0, 
@@ -1579,10 +1750,43 @@
 
         let currentModule = 0;
         let currentQuestion = 0;
-        let userAnswers = {}; // { modIdx: { qIdx: selectedOpt } }
-        let flaggedQuestions = {}; // { modIdx: { qIdx: true } }
+        let userAnswers = new Map();
+        let flaggedQuestions = new Set();
         let secondsElapsed = 0;
         let timerInterval;
+
+        function shuffleArray(items) {
+            for (let index = items.length - 1; index > 0; index--) {
+                const swapIndex = Math.floor(Math.random() * (index + 1));
+                [items[index], items[swapIndex]] = [items[swapIndex], items[index]];
+            }
+        }
+
+        function randomizeModule(moduleData) {
+            shuffleArray(moduleData.questions);
+            moduleData.questions.forEach(qData => {
+                if (!qData.choices) {
+                    qData.choices = qData.options.map((text, index) => ({
+                        text,
+                        isCorrect: index === qData.correct
+                    }));
+                }
+                shuffleArray(qData.choices);
+                qData.correct = qData.choices.findIndex(choice => choice.isCorrect);
+            });
+        }
+
+        function animateQuestion(direction) {
+            const questionShell = document.querySelector('.question-shell');
+            questionShell.classList.remove(
+                'question-enter-next',
+                'question-enter-previous',
+                'question-enter-module',
+                'question-enter-answer'
+            );
+            void questionShell.offsetWidth;
+            questionShell.classList.add(`question-enter-${direction}`);
+        }
 
         // Initialize App
         function init() {
@@ -1596,8 +1800,9 @@
                 sidebarToggle.setAttribute('aria-label', `${isCollapsed ? 'Expand' : 'Collapse'} module list`);
                 sidebarToggle.title = `${isCollapsed ? 'Expand' : 'Collapse'} module list`;
             });
+            randomizeModule(quizData[currentModule]);
             renderModulesList();
-            loadQuestion(0, 0);
+            loadQuestion(0, 0, 'module');
             startTimer();
         }
 
@@ -1627,8 +1832,7 @@
             let totalQuestionsCount = 0;
 
             quizData.forEach((mod, idx) => {
-                let modAnswers = userAnswers[idx] || {};
-                let answeredCount = Object.keys(modAnswers).length;
+                const answeredCount = mod.questions.filter(qData => userAnswers.has(qData)).length;
                 totalAnsweredCount += answeredCount;
                 totalQuestionsCount += mod.questions.length;
 
@@ -1651,13 +1855,21 @@
         }
 
         function switchModule(modIdx) {
-            currentModule = modIdx;
-            currentQuestion = 0;
-            renderModulesList();
-            loadQuestion(currentModule, currentQuestion);
+            if (modIdx === currentModule) return;
+            enterModule(modIdx, 0, 'module');
         }
 
-        function loadQuestion(modIdx, qIdx) {
+        function enterModule(modIdx, qIdx, transition) {
+            if (modIdx !== currentModule) {
+                randomizeModule(quizData[modIdx]);
+            }
+            currentModule = modIdx;
+            currentQuestion = qIdx;
+            renderModulesList();
+            loadQuestion(currentModule, currentQuestion, transition);
+        }
+
+        function loadQuestion(modIdx, qIdx, transition) {
             currentModule = modIdx;
             currentQuestion = qIdx;
             const qData = quizData[modIdx].questions[qIdx];
@@ -1677,100 +1889,103 @@
             }
 
             // Flag checkbox state
-            const isFlagged = flaggedQuestions[modIdx] && flaggedQuestions[modIdx][qIdx];
-            document.getElementById('flag-checkbox').checked = !!isFlagged;
+            document.getElementById('flag-checkbox').checked = flaggedQuestions.has(qData);
 
             // Options
             const optionsContainer = document.getElementById('options-container');
             optionsContainer.innerHTML = '';
 
-            const savedAnswer = userAnswers[modIdx] && userAnswers[modIdx][qIdx];
+            const savedAnswer = userAnswers.get(qData);
             const isAnswered = savedAnswer !== undefined;
 
             const statusText = document.getElementById('q-status-text');
             const hintBox = document.getElementById('hint-container');
 
             if (isAnswered) {
-                statusText.innerHTML = `Answered<br>Marked ${savedAnswer === qData.correct ? '1.00' : '0.00'} out of 1.00`;
-                hintBox.innerText = `💡 Hint: ${qData.hint}`;
+                statusText.innerHTML = `Answered<br>Marked ${savedAnswer.isCorrect ? '1.00' : '0.00'} out of 1.00`;
+                hintBox.replaceChildren();
+                const heading = document.createElement('strong');
+                heading.textContent = 'Rationale & Explanation';
+                const explanation = document.createElement('p');
+                explanation.textContent = `Your answer is ${savedAnswer.isCorrect ? 'correct' : 'incorrect'}. Correct answer: ${qData.choices[qData.correct].text}. ${qData.rationale || qData.hint}`;
+                hintBox.append(heading, explanation);
                 hintBox.style.display = 'block';
             } else {
                 statusText.innerHTML = `Not yet answered<br>Marked 0.00 out of 1.00`;
                 hintBox.style.display = 'none';
             }
 
-            qData.options.forEach((opt, optIdx) => {
+            qData.choices.forEach((choice, optIdx) => {
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.className = 'option-btn';
                 btn.disabled = isAnswered;
-                btn.setAttribute('aria-pressed', String(isAnswered && optIdx === savedAnswer));
+                btn.setAttribute('aria-pressed', String(isAnswered && choice === savedAnswer));
+                const letter = String.fromCharCode(65 + optIdx);
+                btn.setAttribute('aria-label', `${letter}. ${choice.text}${isAnswered ? choice.isCorrect ? '. Correct answer' : choice === savedAnswer ? '. Your incorrect answer' : '' : ''}`);
                 
                 if (isAnswered) {
-                    if (optIdx === qData.correct) {
+                    if (choice.isCorrect) {
                         btn.classList.add('correct');
-                    } else if (optIdx === savedAnswer) {
+                        btn.classList.add('answer-reveal');
+                    } else if (choice === savedAnswer) {
                         btn.classList.add('incorrect');
+                        btn.classList.add('answer-reveal');
                     }
-                } else if (savedAnswer === optIdx) {
-                    btn.classList.add('selected');
                 }
 
                 btn.onclick = () => selectOption(optIdx);
-                btn.innerHTML = `
-                    <span class="option-letter">${String.fromCharCode(65 + optIdx)}</span>
-                    <span>${opt}</span>
-                `;
+                const letterBadge = document.createElement('span');
+                letterBadge.className = 'option-letter';
+                letterBadge.textContent = isAnswered && choice.isCorrect ? '✓' : isAnswered && choice === savedAnswer ? '×' : letter;
+                letterBadge.setAttribute('aria-hidden', 'true');
+                const optionText = document.createElement('span');
+                optionText.textContent = choice.text;
+                btn.append(letterBadge, optionText);
                 optionsContainer.appendChild(btn);
             });
 
             // Nav buttons
             document.getElementById('prev-btn').disabled = (qIdx === 0 && modIdx === 0);
             document.getElementById('next-btn').innerText = (modIdx === quizData.length - 1 && qIdx === quizData[modIdx].questions.length - 1) ? 'Finish' : 'Next';
+            animateQuestion(transition);
         }
 
         function selectOption(optIdx) {
             const qData = quizData[currentModule].questions[currentQuestion];
-            if (!userAnswers[currentModule]) {
-                userAnswers[currentModule] = {};
-            }
-            if (userAnswers[currentModule][currentQuestion] !== undefined) return; // already answered
-
-            userAnswers[currentModule][currentQuestion] = optIdx;
+            if (userAnswers.has(qData)) return;
+            userAnswers.set(qData, qData.choices[optIdx]);
 
             renderModulesList();
-            loadQuestion(currentModule, currentQuestion);
+            loadQuestion(currentModule, currentQuestion, 'answer');
         }
 
         function toggleFlag() {
+            const qData = quizData[currentModule].questions[currentQuestion];
             const isChecked = document.getElementById('flag-checkbox').checked;
-            if (!flaggedQuestions[currentModule]) {
-                flaggedQuestions[currentModule] = {};
+            if (isChecked) {
+                flaggedQuestions.add(qData);
+            } else {
+                flaggedQuestions.delete(qData);
             }
-            flaggedQuestions[currentModule][currentQuestion] = isChecked;
         }
 
         function prevQuestion() {
             if (currentQuestion > 0) {
                 currentQuestion--;
-                loadQuestion(currentModule, currentQuestion);
+                loadQuestion(currentModule, currentQuestion, 'previous');
             } else if (currentModule > 0) {
-                currentModule--;
-                currentQuestion = quizData[currentModule].questions.length - 1;
-                renderModulesList();
-                loadQuestion(currentModule, currentQuestion);
+                const previousModule = currentModule - 1;
+                enterModule(previousModule, quizData[previousModule].questions.length - 1, 'previous');
             }
         }
 
         function nextQuestion() {
             if (currentQuestion < quizData[currentModule].questions.length - 1) {
                 currentQuestion++;
-                loadQuestion(currentModule, currentQuestion);
+                loadQuestion(currentModule, currentQuestion, 'next');
             } else if (currentModule < quizData.length - 1) {
-                currentModule++;
-                currentQuestion = 0;
-                renderModulesList();
-                loadQuestion(currentModule, currentQuestion);
+                enterModule(currentModule + 1, 0, 'next');
             } else {
                 alert("Congratulations! You have completed the comprehensive 300-question DLD circuit exam!");
             }
