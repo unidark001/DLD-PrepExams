@@ -2036,8 +2036,41 @@
             ["The number of different states in its counting cycle", "Number of states per cycle"]
         ]);
 
+        const restoreFullAnswerQuestions = new Set([
+            "What is the main advantage of SIPO (Serial-In, Parallel-Out)?",
+            "How is serial data converted to parallel data?",
+            "What is a UART primarily used for?",
+            "What is a bidirectional shift register control mode?",
+            "What is an Arithmetic Left Shift equivalent to?",
+            "What is overflow in signed binary arithmetic?",
+            "Why is a full adder required instead of a half adder for multi-bit addition?",
+            "What is a barrel shifter used for in ALUs?",
+            "When adding two numbers in 2's complement, what indicates no overflow?",
+            "What is a Logical Shift vs Arithmetic Shift?",
+            "What is Booth's algorithm used for?",
+            "What is an Arithmetic Right Shift equivalent to?",
+            "How does a binary multiplier work using combinational logic?",
+            "What is NVSRAM (Non-Volatile SRAM)?",
+            "What does DRAM stand for, and why does it need refreshing?",
+            "What is an FPGA (Field-Programmable Gate Array)?",
+            "What is core memory (historical)?",
+            "What is a PROM?",
+            "What is a PLA (Programmable Logic Array)?",
+            "What is non-volatile memory (NVM)?",
+            "What does SRAM stand for, and what is its key feature?",
+            "What is a PAL (Programmable Array Logic)?",
+            "What distinguishes EPROM from PROM?",
+            "What is optical storage (CD, DVD, Blu-ray)?",
+            "What is UART used for in computer systems?",
+            "What is memory-mapped I/O?",
+            "What is RISC vs CISC processor architecture?",
+            "What causes glitches in asynchronous ripple counters?",
+            "What is the primary function of a digital counter?",
+            "Which of the following is NOT a common task for a counter?"
+        ]);
+
         function balanceCorrectOption(qData) {
-            if (qData.fullCorrectAnswer) return;
+            if (qData.fullCorrectAnswer || restoreFullAnswerQuestions.has(qData.q)) return;
 
             const correctAnswer = qData.options[qData.correct];
             const longestDistractorLength = Math.max(
