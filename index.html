@@ -395,70 +395,658 @@
             font-weight: 600;
             color: var(--text-muted);
         }
+
+        body[data-theme="light"] {
+            --bg-color: #f5f5f5;
+            --sidebar-bg: #ffffff;
+            --card-bg: #ffffff;
+            --card-border: #d6dce1;
+            --text-color: #212529;
+            --text-muted: #5f6b75;
+            --accent-color: #0f6cbf;
+            --accent-hover: #0b5cad;
+            --success-color: #106b45;
+            --error-color: #a33442;
+            --option-bg: #ffffff;
+            --option-hover: #e7f1f8;
+            --header-bg: #ffffff;
+            --shadow: 0 1px 3px rgba(33, 37, 41, 0.08);
+            --bg-soft: #f8fafc;
+            --primary-soft: #e7f1f8;
+        }
+
+        body[data-theme="dark"] {
+            --bg-color: #0b1422;
+            --sidebar-bg: #0f1d2d;
+            --card-bg: #101d30;
+            --card-border: #23344d;
+            --text-color: #edf3ff;
+            --text-muted: #9aa9bd;
+            --accent-color: #3d9bf5;
+            --accent-hover: #8bc1ff;
+            --success-color: #9ce7bf;
+            --error-color: #ffc7d1;
+            --option-bg: #132338;
+            --option-hover: #1b2c42;
+            --header-bg: rgba(11, 20, 34, 0.92);
+            --shadow: 0 12px 28px rgba(2, 6, 23, 0.3);
+            --bg-soft: #132338;
+            --primary-soft: #142d49;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-width: 320px;
+            min-height: 100vh;
+            height: auto;
+            overflow: auto;
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .site-header {
+            position: sticky;
+            z-index: 10;
+            top: 0;
+            width: 100%;
+            padding: 14px 24px;
+            background: var(--header-bg);
+            border-bottom: 1px solid var(--card-border);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(8px);
+        }
+
+        .site-header-inner {
+            width: min(100%, 1440px);
+            min-height: 40px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .site-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            margin: 0;
+            color: var(--text-color);
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .badge {
+            flex: 0 0 auto;
+            padding: 5px 9px;
+            border-radius: 4px;
+            background: var(--accent-color);
+            color: #ffffff;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 12px;
+        }
+
+        .header-right {
+            gap: 10px;
+        }
+
+        .timer-box {
+            padding: 7px 11px;
+            border-color: var(--card-border);
+            background: var(--option-bg);
+            color: var(--accent-hover);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .theme-toggle {
+            min-height: 36px;
+            padding: 7px 13px;
+            border-radius: 999px;
+            background: var(--option-bg);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-1px);
+        }
+
+        .page-layout {
+            display: grid;
+            grid-template-columns: 270px minmax(0, 1fr);
+            align-items: start;
+            gap: 20px;
+            width: min(100%, 1472px);
+            margin: 24px auto;
+            padding: 0 16px;
+            transition: grid-template-columns 0.25s ease;
+        }
+
+        .page-layout.sidebar-collapsed {
+            grid-template-columns: 48px minmax(0, 1fr);
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 88px;
+            width: auto;
+            min-width: 0;
+            height: auto;
+            max-height: calc(100vh - 112px);
+            background: transparent;
+            border: 0;
+        }
+
+        .sidebar-header {
+            min-height: 36px;
+            padding: 0 2px 8px;
+            border: 0;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        .sidebar-toggle {
+            display: inline-flex;
+            width: 32px;
+            height: 32px;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 auto;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 19px;
+            line-height: 1;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .sidebar-toggle:hover {
+            border-color: var(--accent-color);
+            background: var(--option-hover);
+        }
+
+        .sidebar-toggle svg {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.25s ease;
+        }
+
+        .sidebar.collapsed .sidebar-toggle svg {
+            transform: rotate(180deg);
+        }
+
+        .page-layout.sidebar-collapsed .sidebar-header {
+            justify-content: center;
+        }
+
+        .sidebar.collapsed .sidebar-title,
+        .sidebar.collapsed .modules-list {
+            display: none;
+        }
+
+        .modules-list {
+            max-height: calc(100vh - 154px);
+            overflow-y: auto;
+            padding: 8px;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            background: var(--sidebar-bg);
+            box-shadow: var(--shadow);
+            scrollbar-width: thin;
+        }
+
+        .module-card {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            width: 100%;
+            min-height: 78px;
+            padding: 12px;
+            border: 1px solid var(--card-border);
+            border-radius: 6px;
+            background: var(--option-bg);
+            color: var(--text-color);
+            text-align: left;
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .module-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-1px);
+        }
+
+        .module-card.active {
+            border-color: transparent;
+            background: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .module-title {
+            margin: 0;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .module-status {
+            color: var(--text-muted);
+            font-size: 11px;
+            line-height: 1.3;
+        }
+
+        .module-card.active .module-status {
+            color: rgba(255, 255, 255, 0.88);
+        }
+
+        .module-progress-track {
+            display: block;
+            width: 100%;
+            height: 5px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: rgba(148, 163, 184, 0.2);
+        }
+
+        .module-progress-fill {
+            display: block;
+            width: 0;
+            height: 100%;
+            border-radius: inherit;
+            background: var(--accent-color);
+            transition: width 0.35s ease;
+        }
+
+        .module-card.active .module-progress-track {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .module-card.active .module-progress-fill {
+            background: #ffffff;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            height: auto;
+            overflow: visible;
+        }
+
+        .exam-body {
+            display: block;
+            flex: initial;
+            overflow: visible;
+            padding: 0;
+        }
+
+        .question-shell {
+            display: grid;
+            grid-template-columns: 190px minmax(0, 1fr);
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+        }
+
+        .question-status-panel {
+            width: auto;
+            height: auto;
+            padding: 16px;
+            gap: 0;
+            border: 0;
+            border-right: 1px solid var(--card-border);
+            border-radius: 0;
+            background: var(--bg-soft, #f8fafc);
+        }
+
+        .q-number-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            padding: 7px 10px;
+            border-radius: 6px;
+            background: var(--primary-soft, #e7f1f8);
+            color: var(--accent-hover);
+            font-size: 12px;
+            letter-spacing: 0.02em;
+        }
+
+        .q-state-text {
+            margin-top: 12px;
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .q-state-text::first-line {
+            color: var(--text-color);
+        }
+
+        .flag-box {
+            width: 100%;
+            margin-top: 12px;
+            padding: 8px;
+            border: 1px solid var(--card-border);
+            border-radius: 7px;
+            color: var(--text-color);
+            font-size: 12px;
+        }
+
+        .flag-box input {
+            accent-color: var(--accent-color);
+        }
+
+        .question-main-card {
+            min-width: 0;
+            min-height: 320px;
+            padding: 20px;
+            border: 0;
+            border-radius: 0;
+            background: var(--card-bg);
+        }
+
+        .question-text {
+            margin: 0 0 16px;
+            color: var(--text-color);
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        .visual-container {
+            border-color: var(--card-border);
+            background: var(--bg-color);
+        }
+
+        .options-container {
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .option-btn {
+            width: 100%;
+            min-height: 50px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            background: var(--option-bg);
+            color: var(--text-color);
+            font: inherit;
+            text-align: left;
+            line-height: 1.5;
+            box-shadow: none;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: var(--option-hover);
+            border-color: var(--accent-color);
+        }
+
+        .option-btn.correct {
+            border-color: #6ec59b;
+            background: #ebf9f1;
+            color: #106b45;
+        }
+
+        .option-btn.incorrect {
+            border-color: #ef9ca4;
+            background: #fff1f2;
+            color: #a33442;
+        }
+
+        body[data-theme="dark"] .option-btn.correct {
+            border-color: #2d9a6a;
+            background: #102e22;
+            color: #9ce7bf;
+        }
+
+        body[data-theme="dark"] .option-btn.incorrect {
+            border-color: #d65d77;
+            background: #301b2a;
+            color: #ffc7d1;
+        }
+
+        .option-letter {
+            width: 26px;
+            height: 26px;
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-muted);
+        }
+
+        .hint-container {
+            border-left-color: var(--accent-color);
+            background: var(--option-hover);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .exam-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+            padding: 16px;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+        }
+
+        .nav-btn {
+            min-height: 44px;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font: inherit;
+            font-size: 13px;
+        }
+
+        .nav-btn:not(.primary) {
+            background: var(--option-hover);
+        }
+
+        .nav-btn.primary {
+            background: var(--accent-color);
+        }
+
+        .nav-btn.primary:hover:not(:disabled) {
+            background: var(--accent-hover);
+        }
+
+        .progress-indicator {
+            color: var(--text-color);
+            font-size: 13px;
+        }
+
+        .site-footer {
+            margin-top: auto;
+            padding: 16px;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-muted);
+            text-align: center;
+            font-size: 12px;
+        }
+
+        button:focus-visible,
+        input:focus-visible {
+            outline: 3px solid rgba(15, 108, 191, 0.4);
+            outline-offset: 2px;
+        }
+
+        @media (max-width: 760px) {
+            .site-header {
+                padding: 12px 16px;
+            }
+
+            .site-header-inner {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .site-title {
+                font-size: 15px;
+            }
+
+            .page-layout,
+            .page-layout.sidebar-collapsed {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 14px;
+                margin: 16px auto;
+            }
+
+            .sidebar {
+                position: static;
+                max-height: none;
+            }
+
+            .modules-list {
+                display: flex;
+                max-height: 220px;
+                flex-direction: column;
+            }
+
+            .sidebar.collapsed .modules-list {
+                display: none;
+            }
+
+            .question-shell {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .question-status-panel {
+                display: grid;
+                grid-template-columns: minmax(110px, 0.7fr) minmax(0, 1fr) auto;
+                align-items: center;
+                gap: 12px;
+                border-right: 0;
+                border-bottom: 1px solid var(--card-border);
+            }
+
+            .q-state-text,
+            .flag-box {
+                margin-top: 0;
+            }
+
+            .flag-box {
+                width: auto;
+            }
+
+            .question-main-card {
+                min-height: 0;
+                padding: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .question-status-panel {
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+            }
+
+            .flag-box {
+                grid-column: 1 / -1;
+            }
+
+            .exam-footer {
+                padding: 12px;
+            }
+
+            .nav-btn {
+                padding: 9px 12px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
-<body data-theme="dark">
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <span>DLD Modules (Expanded Circuits)</span>
-            <span id="overall-progress" style="font-size: 12px; color: var(--text-muted);">0 / 300</span>
-        </div>
-        <div class="modules-list" id="modules-list">
-            <!-- Populated via JS -->
-        </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Header -->
-        <header>
-            <div class="header-left">
-                <span class="badge">DLD v3.0 Pro</span>
-                <span class="exam-title">Digital Logic Design - Interactive Circuit Exam (300 Qs)</span>
-            </div>
+<body data-theme="light">
+    <header class="site-header">
+        <div class="site-header-inner">
+            <h1 class="site-title">
+                <span class="badge">DLD v3.0</span>
+                <span>Digital Logic Design Practice Exam</span>
+            </h1>
             <div class="header-right">
                 <div class="timer-box" id="timer">Time: 00:00</div>
-                <button class="theme-toggle" onclick="toggleTheme()">
-                    <span id="theme-icon">☀️</span> <span id="theme-text">Light</span>
+                <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" onclick="toggleTheme()">
+                    <span id="theme-icon" aria-hidden="true">🌙</span>
+                    <span id="theme-text">Dark</span>
                 </button>
             </div>
-        </header>
+        </div>
+    </header>
 
-        <!-- Exam Body -->
-        <div class="exam-body">
-            <!-- Left Question Status Panel -->
-            <div class="question-status-panel">
-                <div class="q-number-badge" id="q-num-badge">Question 1</div>
-                <div class="q-state-text" id="q-status-text">Not yet answered<br>Marked 0.00 out of 1.00</div>
-                <label class="flag-box">
-                    <input type="checkbox" id="flag-checkbox" onchange="toggleFlag()"> Flag question
-                </label>
-            </div>
+    <main class="page-layout" id="page-layout">
+        <aside class="sidebar" id="module-sidebar" aria-label="Modules and progress">
+        <div class="sidebar-header">
+                <span class="sidebar-title">Modules <span id="overall-progress">0 / 300</span></span>
+                <button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-controls="modules-list" aria-expanded="true" aria-label="Collapse module list" title="Collapse module list">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="m14.5 5-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
+        </div>
+            <nav class="modules-list" id="modules-list" aria-label="Choose a module"></nav>
+        </aside>
 
-            <!-- Right Question Main Card -->
-            <div class="question-main-card">
-                <div>
-                    <div class="question-text" id="question-text">Loading question...</div>
-                    <div id="visual-container" class="visual-container" style="display: none;"></div>
-                    <div class="options-container" id="options-container">
-                        <!-- Options generated via JS -->
+        <div class="main-content">
+            <div class="exam-body">
+                <section class="question-shell" aria-label="Current question">
+                    <aside class="question-status-panel" aria-label="Question status">
+                        <div class="q-number-badge" id="q-num-badge">Question 1</div>
+                        <div class="q-state-text" id="q-status-text">Not yet answered<br>Marked 0.00 out of 1.00</div>
+                        <label class="flag-box">
+                            <input type="checkbox" id="flag-checkbox" onchange="toggleFlag()"> Flag question
+                        </label>
+                    </aside>
+
+                    <div class="question-main-card">
+                        <div>
+                            <h2 class="question-text" id="question-text">Loading question...</h2>
+                            <div id="visual-container" class="visual-container" style="display: none;"></div>
+                            <div class="options-container" id="options-container"></div>
+                            <div class="hint-container" id="hint-container"></div>
+                        </div>
                     </div>
-                    <div class="hint-container" id="hint-container">
-                        <!-- Hint appears after answering -->
-                    </div>
-                </div>
+                </section>
+
+                <nav class="exam-footer" aria-label="Question navigation">
+                    <button class="nav-btn" id="prev-btn" type="button" onclick="prevQuestion()">Previous</button>
+                    <div class="progress-indicator" id="progress-indicator">Question 1 of 30</div>
+                    <button class="nav-btn primary" id="next-btn" type="button" onclick="nextQuestion()">Next</button>
+                </nav>
             </div>
         </div>
+    </main>
 
-        <!-- Exam Footer Navigation -->
-        <div class="exam-footer">
-            <button class="nav-btn" id="prev-btn" onclick="prevQuestion()">Previous</button>
-            <div class="progress-indicator" id="progress-indicator">Question 1 of 30</div>
-            <button class="nav-btn primary" id="next-btn" onclick="nextQuestion()">Next</button>
-        </div>
-    </div>
+    <footer class="site-footer">Digital Logic Design · Interactive practice exam</footer>
 
     <script>
         const quizData = [
@@ -998,6 +1586,16 @@
 
         // Initialize App
         function init() {
+            const sidebar = document.getElementById('module-sidebar');
+            const layout = document.getElementById('page-layout');
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            sidebarToggle.addEventListener('click', () => {
+                const isCollapsed = sidebar.classList.toggle('collapsed');
+                layout.classList.toggle('sidebar-collapsed', isCollapsed);
+                sidebarToggle.setAttribute('aria-expanded', String(!isCollapsed));
+                sidebarToggle.setAttribute('aria-label', `${isCollapsed ? 'Expand' : 'Collapse'} module list`);
+                sidebarToggle.title = `${isCollapsed ? 'Expand' : 'Collapse'} module list`;
+            });
             renderModulesList();
             loadQuestion(0, 0);
             startTimer();
@@ -1017,8 +1615,9 @@
             const currentTheme = body.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             body.setAttribute('data-theme', newTheme);
-            document.getElementById('theme-icon').innerText = newTheme === 'dark' ? '☀️' : '🌙';
-            document.getElementById('theme-text').innerText = newTheme === 'dark' ? 'Light' : 'Dark';
+            document.getElementById('theme-icon').innerText = newTheme === 'dark' ? '🌙' : '☀️';
+            document.getElementById('theme-text').innerText = newTheme === 'dark' ? 'Dark' : 'Light';
+            document.getElementById('theme-toggle').setAttribute('aria-label', `Switch to ${newTheme === 'dark' ? 'light' : 'dark'} theme`);
         }
 
         function renderModulesList() {
@@ -1033,12 +1632,17 @@
                 totalAnsweredCount += answeredCount;
                 totalQuestionsCount += mod.questions.length;
 
-                const card = document.createElement('div');
+                const card = document.createElement('button');
+                card.type = 'button';
                 card.className = `module-card ${idx === currentModule ? 'active' : ''}`;
+                card.setAttribute('aria-pressed', String(idx === currentModule));
                 card.onclick = () => switchModule(idx);
                 card.innerHTML = `
                     <div class="module-title">${mod.title}</div>
                     <div class="module-status">${answeredCount} / ${mod.questions.length} answered</div>
+                    <span class="module-progress-track" aria-hidden="true">
+                        <span class="module-progress-fill" style="width: ${answeredCount / mod.questions.length * 100}%"></span>
+                    </span>
                 `;
                 container.appendChild(card);
             });
@@ -1096,8 +1700,11 @@
             }
 
             qData.options.forEach((opt, optIdx) => {
-                const btn = document.createElement('div');
+                const btn = document.createElement('button');
+                btn.type = 'button';
                 btn.className = 'option-btn';
+                btn.disabled = isAnswered;
+                btn.setAttribute('aria-pressed', String(isAnswered && optIdx === savedAnswer));
                 
                 if (isAnswered) {
                     if (optIdx === qData.correct) {
@@ -1111,8 +1718,8 @@
 
                 btn.onclick = () => selectOption(optIdx);
                 btn.innerHTML = `
-                    <div class="option-letter">${String.fromCharCode(65 + optIdx)}</div>
-                    <div>${opt}</div>
+                    <span class="option-letter">${String.fromCharCode(65 + optIdx)}</span>
+                    <span>${opt}</span>
                 `;
                 optionsContainer.appendChild(btn);
             });
