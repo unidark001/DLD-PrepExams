@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Digital Logic Design - Comprehensive Circuit Exam</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --sidebar-bg: #111827;
+            --card-bg: #1f2937;
+            --card-border: #374151;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-color: #3b82f6;
+            --accent-hover: #2563eb;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --option-bg: #111827;
+            --option-hover: #374151;
+            --header-bg: #111827;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f3f4f6;
+            --sidebar-bg: #ffffff;
+            --card-bg: #ffffff;
+            --card-border: #e5e7eb;
+            --text-color: #1f2937;
+            --text-muted: #6b7280;
+            --accent-color: #2563eb;
+            --accent-hover: #1d4ed8;
+            --success-color: #059669;
+            --error-color: #dc2626;
+            --option-bg: #f9fafb;
+            --option-hover: #f3f4f6;
+            --header-bg: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 320px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modules-list {
+            overflow-y: auto;
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .module-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 12px 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .module-card:hover {
+            border-color: var(--accent-color);
+        }
+
+        .module-card.active {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .module-card.active .module-status {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .module-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .module-status {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--header-bg);
+            border-bottom: 1px solid var(--card-border);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .badge {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .exam-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .timer-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: monospace;
+        }
+
+        .theme-toggle {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-color);
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--option-hover);
+        }
+
+        /* Exam Body (Split View) */
+        .exam-body {
+            flex-grow: 1;
+            padding: 25px;
+            overflow-y: auto;
+            display: flex;
+            gap: 25px;
+        }
+
+        /* Left Question Nav / Status Box */
+        .question-status-panel {
+            width: 240px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: fit-content;
+        }
+
+        .q-number-badge {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .q-state-text {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .flag-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Right Question Card */
+        .question-main-card {
+            flex-grow: 1;
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .question-text {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        /* Visual Container for Diagrams/K-Maps/SVG */
+        .visual-container {
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: auto;
+        }
+
+        .kmap-table {
+            border-collapse: collapse;
+            text-align: center;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .kmap-table td, .kmap-table th {
+            border: 1px solid var(--card-border);
+            width: 45px;
+            height: 45px;
+            padding: 5px;
+        }
+
+        .kmap-table th {
+            background-color: rgba(59, 130, 246, 0.15);
+            color: var(--accent-color);
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background-color: var(--option-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-color);
+            padding: 14px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            background-color: var(--option-hover);
+            border-color: var(--accent-color);
+        }
+
+        .option-btn.selected {
+            border-color: var(--accent-color);
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+
+        .option-btn.correct {
+            border-color: var(--success-color);
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--success-color);
+        }
+
+        .option-btn.incorrect {
+            border-color: var(--error-color);
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--error-color);
+        }
+
+        .option-letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .hint-container {
+            display: none;
+            margin-top: 15px;
+            padding: 12px 16px;
+            background-color: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--accent-color);
+            border-radius: 0 6px 6px 0;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* Footer Navigation */
+        .exam-footer {
+            background-color: var(--header-bg);
+            border-top: 1px solid var(--card-border);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-color);
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background-color: var(--option-hover);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .nav-btn.primary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+        }
+
+        .nav-btn.primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .progress-indicator {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <span>DLD Modules (Expanded Circuits)</span>
+            <span id="overall-progress" style="font-size: 12px; color: var(--text-muted);">0 / 300</span>
+        </div>
+        <div class="modules-list" id="modules-list">
+            <!-- Populated via JS -->
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header>
+            <div class="header-left">
+                <span class="badge">DLD v3.0 Pro</span>
+                <span class="exam-title">Digital Logic Design - Interactive Circuit Exam (300 Qs)</span>
+            </div>
+            <div class="header-right">
+                <div class="timer-box" id="timer">Time: 00:00</div>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <span id="theme-icon">☀️</span> <span id="theme-text">Light</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Exam Body -->
+        <div class="exam-body">
+            <!-- Left Question Status Panel -->
+            <div class="question-status-panel">
+                <div class="q-number-badge" id="q-num-badge">Question 1</div>
+                <div class="q-state-text" id="q-status-text">Not yet answered<br>Marked 0.00 out of 1.00</div>
+                <label class="flag-box">
+                    <input type="checkbox" id="flag-checkbox" onchange="toggleFlag()"> Flag question
+                </label>
+            </div>
+
+            <!-- Right Question Main Card -->
+            <div class="question-main-card">
+                <div>
+                    <div class="question-text" id="question-text">Loading question...</div>
+                    <div id="visual-container" class="visual-container" style="display: none;"></div>
+                    <div class="options-container" id="options-container">
+                        <!-- Options generated via JS -->
+                    </div>
+                    <div class="hint-container" id="hint-container">
+                        <!-- Hint appears after answering -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exam Footer Navigation -->
+        <div class="exam-footer">
+            <button class="nav-btn" id="prev-btn" onclick="prevQuestion()">Previous</button>
+            <div class="progress-indicator" id="progress-indicator">Question 1 of 30</div>
+            <button class="nav-btn primary" id="next-btn" onclick="nextQuestion()">Next</button>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                title: "Mod 1: Digital Electronics & Waveforms",
+                questions: [
+                    { q: "What is the primary characteristic of an analog signal?", options: ["Discrete voltage levels", "Continuous values over time", "Only binary states (0 and 1)", "Undefined frequency"], correct: 1, hint: "Analog signals vary continuously, unlike digital signals which are discrete." },
+                    { q: "Which logic family typically operates on 5V and uses BJT transistors?", options: ["CMOS", "ECL", "TTL", "MOSFET"], correct: 2, hint: "Transistor-Transistor Logic (TTL) standard operating voltage is usually 5V." },
+                    { 
+                        q: "Based on the signal waveform shown below, what type of transition is highlighted at the trigger point?", 
+                        visual: `<svg width="380" height="110" viewBox="0 0 380 110">
+                            <line x1="20" y1="90" x2="360" y2="90" stroke="#9ca3af" stroke-width="2"/>
+                            <line x1="20" y1="20" x2="20" y2="100" stroke="#9ca3af" stroke-width="2"/>
+                            <!-- Waveform pulse train -->
+                            <path d="M 30 90 L 90 90 L 120 30 L 200 30 L 230 90 L 310 90 L 340 30" fill="none" stroke="#3b82f6" stroke-width="3"/>
+                            <!-- Indicator -->
+                            <circle cx="120" cy="60" r="5" fill="#ef4444"/>
+                            <text x="135" y="55" fill="#f3f4f6" font-size="12">Positive Edge Transition</text>
+                        </svg>`,
+                        options: ["Falling edge", "Rising edge", "High level steady state", "Low level steady state"], 
+                        correct: 1, 
+                        hint: "The transition from LOW (0V) to HIGH is a rising edge." 
+                    },
+                    { q: "Convert the decimal number 45 to binary.", options: ["101101", "110011", "100111", "111001"], correct: 0, hint: "32 + 8 + 4 + 1 = 45 -> 101101₂." },
+                    { q: "What is the hexadecimal representation of binary 11011110?", options: ["DE", "BC", "EF", "AD"], correct: 0, hint: "1101₂ = D, 1110₂ = E." },
+                    { q: "How many bits are in a standard computer byte?", options: ["4 bits", "8 bits", "16 bits", "32 bits"], correct: 1, hint: "A byte consists of 8 bits." },
+                    { q: "Which multivibrator has two stable states?", options: ["Astable", "Monostable", "Bistable", "Multivibrator zero"], correct: 2, hint: "Bi-stable means it has two stable states (used in memory elements)." },
+                    { q: "What is the octal equivalent of decimal 64?", options: ["100", "77", "120", "64"], correct: 0, hint: "64 / 8 = 8 remainder 0; 8 / 8 = 1 remainder 0 -> 100₈." },
+                    { q: "Which device is commonly used to visually inspect signal waveforms and timing?", options: ["Multimeter", "Oscilloscope", "Logic Probe", "Frequency counter"], correct: 1, hint: "An oscilloscope graphs voltage changes over time." },
+                    { q: "What is the maximum value represented by a 4-bit unsigned binary number?", options: ["8", "15", "16", "31"], correct: 1, hint: "2⁴ - 1 = 15 (from 0 to 15)." },
+                    { q: "In CMOS logic, what is the main advantage over TTL?", options: ["Faster switching speed", "Very low power consumption", "Higher output current", "Cheaper manufacturing"], correct: 1, hint: "CMOS draws near-zero static power." },
+                    { q: "What does ASCII stand for?", options: ["American Standard Code for Information Interchange", "Advanced System Code for Integrated Interface", "Analog Signal Communication Information Index", "Automatic Sequence Computer Instruction Item"], correct: 0, hint: "It's the standard character encoding format." },
+                    { q: "Convert hexadecimal 'B5' to decimal.", options: ["175", "181", "165", "190"], correct: 1, hint: "B (11) * 16 + 5 = 176 + 5 = 181." },
+                    { q: "Which logic level represents logical '1' in positive logic TTL?", options: ["0V to 0.8V", "2V to 5V", "-5V to 0V", "12V"], correct: 1, hint: "High level is ≥ 2.0V up to 5V." },
+                    { q: "What is the base of the octal number system?", options: ["2", "8", "10", "16"], correct: 1, hint: "Octal uses digits 0 through 7 (base 8)." },
+                    { 
+                        q: "Analyze the multi-stage RC delay waveform below. What phenomenon causes the rounded edges of the digital pulse?", 
+                        visual: `<svg width="350" height="100" viewBox="0 0 350 100">
+                            <line x1="20" y1="80" x2="330" y2="80" stroke="#9ca3af" stroke-width="2"/>
+                            <!-- RC Exponential rise/fall -->
+                            <path d="M 30 80 L 80 80 Q 110 80, 110 40 L 170 40 Q 170 80, 200 80 L 280 80 Q 310 80, 310 40" fill="none" stroke="#f59e0b" stroke-width="3"/>
+                            <text x="70" y="25" fill="#f3f4f6" font-size="12">Capacitive Charging & RC Time Constant</text>
+                        </svg>`,
+                        options: ["RC time constant and capacitive charging", "Inductive voltage spike", "Clock jitter", "Short circuit"], 
+                        correct: 0, 
+                        hint: "Capacitors require time to charge and discharge through resistors, creating exponential rise/fall times." 
+                    },
+                    { q: "What is fan-out in digital integrated circuits?", options: ["Maximum number of standard inputs a gate output can reliably drive", "Cooling fan speed", "Power dissipation rate", "Operating frequency"], correct: 0, hint: "Fan-out specifies load capacity." },
+                    { q: "What is noise margin in digital logic families?", options: ["Maximum noise voltage that can be tolerated without incorrect state transitions", "Audio volume limit", "Board clearance spacing", "Tolerance in resistor manufacturing"], correct: 0, hint: "Noise margins (HIGH and LOW) ensure reliable signal transmission." },
+                    { q: "What is the primary drawback of ECL (Emitter-Coupled Logic)?", options: ["High power consumption", "Extremely slow speed", "Inability to drive loads", "High cost of silicon"], correct: 0, hint: "ECL is the fastest logic family but consumes significant power." },
+                    { q: "Which number system is foundational for digital computer architecture?", options: ["Binary", "Octal", "Decimal", "Duodecimal"], correct: 0, hint: "Binary (0 and 1) matches electronic switch states." },
+                    { q: "What is a tristate buffer output state when disabled?", options: ["High-Z (High Impedance / Disconnected)", "Logic 0", "Logic 1", "Short circuit to ground"], correct: 0, hint: "High-Z disconnects the output electrically from the bus." },
+                    { q: "What is the decimal equivalent of binary 1011011₂?", options: ["91", "89", "95", "87"], correct: 0, hint: "64 + 16 + 8 + 2 + 1 = 91." },
+                    { q: "What is a pull-up resistor used for in digital logic inputs?", options: ["To ensure a definite HIGH state (Vcc) when the switch is open", "To limit current to LED", "To step down voltage", "To generate clock pulses"], correct: 0, hint: "Pull-up resistors prevent floating input pins." },
+                    { q: "What is propagation delay time ($t_{PLH}$ and $t_{PHL}$)?", options: ["Time delay between input signal change and corresponding output change", "Total boot time", "Clock period", "Refresh cycle time"], correct: 0, hint: "Propagation delay measures gate speed." },
+                    { q: "What is BCD encoding format for decimal 48?", options: ["0100 1000", "0011 0000", "1100 0001", "1111 0000"], correct: 0, hint: "4 is 0100, 8 is 1000 in 4-bit nibbles." },
+                    { q: "Which parameter defines the maximum operating frequency of a digital circuit?", options: ["Propagation delay per gate", "Supply voltage", "Package size", "Wire color"], correct: 0, hint: "Gate delays limit how fast clock signals can toggle." },
+                    { q: "What is Schmitt trigger hysteresis?", options: ["Having two different threshold voltages for rising and falling input edges", "Memory storage", "Voltage amplification", "Phase inversion"], correct: 0, hint: "Hysteresis provides noise immunity." },
+                    { q: "What is the 16's complement of hexadecimal value '3A'?", options: ["C6", "C5", "D4", "B6"], correct: 0, hint: "16's comp = 15's comp + 1. 15-3=C, 15-10=5 -> C5 + 1 = C6." },
+                    { q: "What is a bi-directional bus transceiver?", options: ["A circuit allowing data transmission in both directions between two buses", "A one-way amplifier", "A dual power supply", "A counter"], correct: 0, hint: "Transceivers control data flow direction." },
+                    { q: "Why are decoupling capacitors placed across Vcc and GND on digital IC sockets?", options: ["To filter out high-frequency voltage transients and noise spikes", "To store permanent data", "To increase clock speed", "To boost resistance"], correct: 0, hint: "Decoupling capacitors stabilize power rails." }
+                ]
+            },
+            {
+                title: "Mod 2: Combinational Logic Circuits & Gates",
+                questions: [
+                    { 
+                        q: "Analyze the combinational gate network below. What is the Boolean expression for output Y?", 
+                        visual: `<svg width="320" height="120" viewBox="0 0 320 120">
+                            <!-- Inputs -->
+                            <text x="10" y="30" fill="#3b82f6" font-size="14">A</text>
+                            <text x="10" y="90" fill="#3b82f6" font-size="14">B</text>
+                            <!-- AND Gate 1 -->
+                            <path d="M 60 15 L 100 15 C 120 15, 130 25, 130 40 C 130 55, 120 65, 100 65 L 60 65 Z" fill="#1f2937" stroke="#3b82f6" stroke-width="2"/>
+                            <!-- OR Gate -->
+                            <path d="M 170 30 L 210 30 C 235 30, 245 45, 255 60 C 245 75, 235 90, 210 90 L 170 90 C 190 75, 190 45, 170 30 Z" fill="#1f2937" stroke="#10b981" stroke-width="2"/>
+                            <text x="270" y="65" fill="#f3f4f6" font-size="14">Y</text>
+                        </svg>`,
+                        options: ["Y = A · B + C", "Y = (A + B) · C", "Y = A ⊕ B", "Y = (A · B)'"], 
+                        correct: 0, 
+                        hint: "First stage performs AND (A · B), followed by OR or combination." 
+                    },
+                    { q: "What is the output of an OR gate with inputs 0 and 1?", options: ["0", "1", "High-Z", "Undefined"], correct: 1, hint: "OR gate outputs 1 if at least one input is 1." },
+                    { q: "Why are NAND and NOR gates called 'universal gates'?", options: ["They are the cheapest", "Any logic function can be implemented using only them", "They operate at any voltage", "They have infinite fan-out"], correct: 1, hint: "Universal gates can replicate AND, OR, and NOT functions." },
+                    { q: "What is the Boolean expression for a NOT gate (inverter)?", options: ["Y = A + B", "Y = A · B", "Y = A'", "Y = A ⊕ B"], correct: 2, hint: "NOT inverts the input, denoted by a prime (') or bar." },
+                    { q: "An XOR gate outputs HIGH when:", options: ["Both inputs are identical", "Inputs are different", "Both inputs are 0", "Both inputs are 1"], correct: 1, hint: "Exclusive OR means output is 1 if inputs differ (0,1 or 1,0)." },
+                    { q: "What does a three-state (tri-state) buffer add to its output options?", options: ["Inverted output", "High-impedance (High-Z) state", "Amplified current", "Feedback loop"], correct: 1, hint: "Tri-state outputs can be 0, 1, or Disconnected (High-Z)." },
+                    { q: "What is the truth table output of a 2-input XNOR gate for inputs (0,0)?", options: ["0", "1", "High-Z", "Toggle"], correct: 1, hint: "XNOR outputs 1 when inputs are equal." },
+                    { q: "Which gate is equivalent to an AND gate followed by a NOT gate?", options: ["NAND", "NOR", "XOR", "XNOR"], correct: 0, hint: "NOT-AND = NAND." },
+                    { q: "How many input combinations exist for a 3-input logic gate?", options: ["4", "6", "8", "16"], correct: 2, hint: "2³ = 8 combinations." },
+                    { q: "What is the primary function of a buffer gate?", options: ["Invert signal", "Provide current amplification / isolation without inversion", "Store 1 bit", "Perform addition"], correct: 1, hint: "Buffers pass the signal through unchanged while boosting drive strength." },
+                    { q: "Which gate represents inequality detection?", options: ["AND", "OR", "XOR", "NOR"], correct: 2, hint: "XOR outputs 1 when inputs are unequal." },
+                    { q: "De Morgan's first theorem states that (A + B)' equals:", options: ["A' + B'", "A' · B'", "A + B'", "A · B"], correct: 1, hint: "Break the bar, change the sign: (A+B)' = A' · B'." },
+                    { q: "What is the output of a NOR gate when all inputs are 0?", options: ["0", "1", "Undefined", "High-Z"], correct: 1, hint: "NOR is inverted OR. 0 OR 0 = 0, inverted = 1." },
+                    { q: "Which IC family standard represents quad 2-input NAND gates?", options: ["7400", "7402", "7404", "7408"], correct: 0, hint: "7400 is the classic quad 2-input NAND IC." },
+                    { q: "In pulse-triggered logic, what is propagation delay?", options: ["Time taken for power to turn on", "Time delay between input change and output response", "Clock frequency rate", "Rise time of input pulse"], correct: 1, hint: "Propagation delay measures how fast a gate reacts to input changes." },
+                    { 
+                        q: "Determine the output of this XOR-based parity checker circuit for input bits A=1, B=0, C=1:", 
+                        visual: `<svg width="300" height="100" viewBox="0 0 300 100">
+                            <text x="10" y="30" fill="#3b82f6" font-size="12">A=1, B=0</text>
+                            <text x="10" y="70" fill="#3b82f6" font-size="12">C=1</text>
+                            <path d="M 80 20 L 130 20 C 150 20, 160 35, 160 50 C 160 65, 150 80, 130 80 L 80 80 Z" fill="#1f2937" stroke="#3b82f6" stroke-width="2"/>
+                            <text x="95" y="55" fill="#f3f4f6" font-size="12">XOR Tree</text>
+                        </svg>`,
+                        options: ["Output = 0 (Even parity)", "Output = 1 (Odd parity)", "High-Z", "Undefined"], 
+                        correct: 0, 
+                        hint: "1 ⊕ 0 ⊕ 1 = 1 ⊕ 1 = 0 (Even number of 1s gives 0 in XOR parity)." 
+                    },
+                    { q: "What is the circuit simplification of Y = AB + AB'?", options: ["A", "B", "AB", "A + B"], correct: 0, hint: "Factor out A: A(B + B') = A(1) = A." },
+                    { q: "How many NAND gates are minimally required to implement an XOR function?", options: ["4", "2", "3", "5"], correct: 0, hint: "Standard NAND implementation of XOR requires 4 NAND gates." },
+                    { q: "What is the output of an AND gate when any of its inputs is 0?", options: ["0", "1", "High-Z", "Depends on other input"], correct: 0, hint: "0 AND anything = 0." },
+                    { q: "Which Boolean law states that A + AB = A?", options: ["Absorption Law", "Distributive Law", "Associative Law", "Commutative Law"], correct: 0, hint: "Absorption law simplifies redundant product terms." },
+                    { q: "What is the complement of the expression Y = (A + B')(C + D)?", options: ["A'B + C'D'", "A' + B + C' + D'", "(A' + B)(C' + D')", "AB' + CD"], correct: 2, hint: "Apply De Morgan's laws across product and sum terms." },
+                    { q: "What is open-collector output configuration in TTL gates?", options: ["Output transistor collector is left unconnected internally, requiring an external pull-up resistor", "Direct connection to Vcc", "Tri-state output", "Push-pull output"], correct: 0, hint: "Open-collector permits wired-AND connections." },
+                    { q: "What is a wired-AND connection?", options: ["Connecting open-collector/open-drain outputs together to perform logic AND function externally", "Shorting power rails", "Wiring errors", "Series switches"], correct: 0, hint: "Wired-AND ties outputs together with a common pull-up resistor." },
+                    { q: "Which logic gate exhibits the 'Bubble Pushing' theorem property?", options: ["NAND and NOR (expressing OR with inverted inputs)", "AND", "XOR", "Buffer"], correct: 0, hint: "Bubble pushing moves inversion bubbles across gate symbols." },
+                    { q: "What is the output of an XNOR gate when inputs are complementary (0 and 1)?", options: ["0", "1", "High-Z", "Oscillating"], correct: 0, hint: "XNOR outputs 0 when inputs differ." },
+                    { q: "What is the primary advantage of using AOI (AND-OR-Invert) gates?", options: ["Reduces gate count and propagation delay by combining logic in single complex gates", "Lower voltage operation", "Infinite fan-out", "Easier soldering"], correct: 0, hint: "AOI gates implement complex sum-of-products efficiently." },
+                    { q: "What is a hazard in combinational logic circuits?", options: ["Unwanted temporary glitches or spikes in output caused by unequal propagation delays", "Power surge", "Blown fuse", "Permanent logic error"], correct: 0, hint: "Static and dynamic hazards occur due to race conditions in gate paths." },
+                    { q: "How are static hazards eliminated in K-map designs?", options: ["By adding redundant product terms (consensus terms) that cover the transition boundary", "By increasing voltage", "By adding capacitors", "By removing gates"], correct: 0, hint: "Redundant loops bridge adjacent groupings to prevent output dropouts." },
+                    { q: "What is a multiplexer?", options: ["Data selector that routes one of multiple input lines to a single output line based on select lines", "Decoder", "Counter", "Adder"], correct: 0, hint: "MUX selects 1 of N inputs." },
+                    { q: "What is a demultiplexer?", options: ["Circuit that takes a single input and routes it to one of 2^n outputs based on select lines", "Data selector", "Encoder", "Subtractors"], correct: 0, hint: "DEMUX distributes 1 input to multiple outputs." }
+                ]
+            },
+            {
+                title: "Mod 3: Boolean Algebra & Karnaugh Maps",
+                questions: [
+                    { 
+                        q: "Simplify the Boolean function represented by this 4-cell Karnaugh map (minterms m1, m3):", 
+                        visual: `<table class="kmap-table">
+                            <tr><th>\ AB</th><th>B=0</th><th>B=1</th></tr>
+                            <tr><th>A=0</th><td>0</td><td>1</td></tr>
+                            <tr><th>A=1</th><td>0</td><td>1</td></tr>
+                        </table>`,
+                        options: ["A", "B", "A + B", "A'B"], 
+                        correct: 1, 
+                        hint: "Notice output is 1 whenever B=1 regardless of A. Minimized term is B." 
+                    },
+                    { q: "What is a 'minterm' in Boolean logic?", options: ["A product term containing all variables in true or complemented form", "A sum term with single literals", "The smallest gate in a circuit", "Minimum voltage level"], correct: 0, hint: "Minterm is an AND term evaluating to 1 for a specific row." },
+                    { q: "How many cells are in a 4-variable Karnaugh map?", options: ["4", "8", "16", "32"], correct: 2, hint: "2⁴ = 16 cells." },
+                    { q: "What is the result of A + A'?", options: ["0", "1", "A", "A'"], correct: 1, hint: "Complement law: anything ORed with its inverse is always 1." },
+                    { q: "In a K-map, adjacent cells differ by how many variable states?", options: ["0", "1", "2", "All variables"], correct: 1, hint: "Gray code ordering ensures only one bit changes between adjacent cells." },
+                    { q: "What does De Morgan's theorem state for (A · B)'?", options: ["A' · B'", "A' + B'", "A + B", "A · B'"], correct: 1, hint: "(A·B)' = A' + B'." },
+                    { q: "What is the maximum size of a grouping loop in a K-map?", options: ["Powers of 2 (1, 2, 4, 8, 16)", "Any rectangular shape", "Only odd numbers", "Always 4 cells"], correct: 0, hint: "Groupings must be powers of two: 1, 2, 4, 8, 16." },
+                    { q: "What is a 'maxterm'?", options: ["Sum term containing all variables", "Product of max values", "Maximum clock speed", "Largest gate"], correct: 0, hint: "Maxterm is an OR term evaluating to 0 for a specific row." },
+                    { q: "Simplify the expression: A · (A + B)", options: ["A", "B", "A + B", "0"], correct: 0, hint: "Distributive law / absorption: A(A+B) = A." },
+                    { q: "What is the dual of the expression A + 0 = A?", options: ["A · 1 = A", "A + 1 = 1", "A · 0 = 0", "A + A = A"], correct: 0, hint: "Replace '+' with '·' and '0' with '1'." },
+                    { q: "In K-map minimization, wrapping around edges (left-to-right, top-to-bottom) is allowed because:", options: ["The map is cylindrical/toroidal", "It saves space", "It increases voltage", "It eliminates maxterms"], correct: 0, hint: "K-maps wrap around due to Gray code adjacency." },
+                    { q: "What is the output of A ⊕ A (XOR with itself)?", options: ["0", "1", "A", "A'"], correct: 0, hint: "If inputs are identical, XOR outputs 0." },
+                    { q: "What form of expression is Sum-of-Products (SOP)?", options: ["AND gates feeding into an OR gate", "OR gates feeding into an AND gate", "Only NOT gates", "Cascaded XORs"], correct: 0, hint: "SOP = AND products summed (ORed) together." },
+                    { q: "What does a 'don't care' condition (X) in a K-map represent?", options: ["An error in wiring", "An input combination that never occurs or output doesn't matter", "A short circuit", "A constant 1"], correct: 1, hint: "Don't cares can be treated as 0 or 1 to form larger groups." },
+                    { q: "Simplify: A'B' + A'B + AB", options: ["A' + B", "A + B'", "A' + B'", "A + B"], correct: 1, hint: "A'B' + A'B = A'. Then A' + AB = A' + B." },
+                    { 
+                        q: "Simplify the 3-variable K-map shown below for function F(A,B,C) = Σm(2,3,6,7):", 
+                        visual: `<table class="kmap-table">
+                            <tr><th>\ BC</th><th>00</th><th>01</th><th>11</th><th>10</th></tr>
+                            <tr><th>A=0</th><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+                            <tr><th>A=1</th><td>0</td><td>0</td><td>1</td><td>1</td></tr>
+                        </table>`,
+                        options: ["B", "C", "A + B", "BC'"], 
+                        correct: 0, 
+                        hint: "Columns for BC=11 and BC=10 have 1s across both A=0 and A=1. This column pair corresponds to variable B=1." 
+                    },
+                    { q: "What is the Product-of-Sums (POS) canonical form derived from?", options: ["Maxterms where output is 0", "Minterms where output is 1", "Don't cares only", "XOR gates"], correct: 0, hint: "POS multiplies maxterms that yield 0." },
+                    { q: "How many prime implicants are in a minimal cover if all are essential?", options: ["Equal to the minimum sum of products terms needed", "Zero", "16", "Infinite"], correct: 0, hint: "Essential prime implicants must be included in every minimal cover." },
+                    { q: "What is Consensus Theorem in Boolean Algebra?", options: ["XY + X'Z + YZ = XY + X'Z", "X + Y = Y + X", "XX' = 0", "X + 1 = 1"], correct: 0, hint: "The redundant term YZ can be eliminated by consensus." },
+                    { q: "What is an essential prime implicant?", options: ["A prime implicant that covers at least one minterm not covered by any other prime implicant", "The largest gate", "The slowest path", "Input power line"], correct: 0, hint: "Essential PIs are mandatory for the minimized expression." },
+                    { q: "What is Quine-McCluskey method used for?", options: ["Systematic tabular minimization of Boolean functions with many variables (>4)", "Soldering chips", "Measuring voltage", "Clock generation"], correct: 0, hint: "Quine-McCluskey is a programmatic tabular reduction algorithm." },
+                    { q: "What is the complement of F = AB + CD in POS form?", options: ["(A' + B')(C' + D')", "(A + B)(C + D)", "A'B' + C'D'", "(A' + B)(C + D')"], correct: 0, hint: "Apply De Morgan's Law." },
+                    { q: "How many cells are in a 5-variable Karnaugh map?", options: ["32", "16", "64", "8"], correct: 0, hint: "2⁵ = 32 cells (often drawn as two 16-cell maps side-by-side)." },
+                    { q: "What is a literal in Boolean algebra?", options: ["A variable or its complement (e.g., A or A')", "A constant 1", "A gate output", "A wire"], correct: 0, hint: "Literals are individual variable occurrences." },
+                    { q: "What is the result of applying Involution Law: (A')'?", options: ["A", "A'", "0", "1"], correct: 0, hint: "Double inversion returns the original variable." },
+                    { q: "What is Idempotent Law?", options: ["A + A = A and A · A = A", "A + 1 = 1", "A + A' = 1", "A · 0 = 0"], correct: 0, hint: "Idempotency means operations repeated yield themselves." },
+                    { q: "What is Associative Law in Boolean algebra?", options: ["(A + B) + C = A + (B + C)", "A + B = B + A", "A(B + C) = AB + AC", "A + AB = A"], correct: 0, hint: "Grouping does not affect result in pure AND/OR operations." },
+                    { q: "How do you handle 'don't care' conditions in POS minimization?", options: ["Treat them as 0s to form maxterm groups, or 1s if unneeded", "Always treat as 1", "Ignore them completely", "Invert them"], correct: 0, hint: "In POS, don't cares are treated as 0 to create maxterm zeros." },
+                    { q: "What is the minimized expression for F(A,B) = Σm(0, 1, 2, 3)?", options: ["1", "0", "A + B", "AB"], correct: 0, hint: "All cells are 1, so the function is a constant logic HIGH (1)." },
+                    { q: "Why is minimization important in digital logic design?", options: ["To reduce gate count, propagation delay, power consumption, and manufacturing cost", "To increase heat", "To make circuits larger", "To use more wires"], correct: 0, hint: "Fewer gates mean optimized, cheaper, and faster hardware." }
+                ]
+            },
+            {
+                title: "Mod 4: MSI Components, Encoders, Decoders & Displays",
+                questions: [
+                    { q: "What is the primary function of a decoder?", options: ["Convert binary code to a set of active outputs (e.g., 1-of-N)", "Convert decimal to BCD", "Add two numbers", "Store data bits"], correct: 0, hint: "Decoders activate one specific output line based on binary input code." },
+                    { q: "How many output lines does a 3-to-8 line decoder have?", options: ["3", "6", "8", "16"], correct: 2, hint: "2³ = 8 outputs." },
+                    { q: "What is an encoder used for?", options: ["Converting active input line into a coded binary output", "Displaying numbers on LCD", "Multiplexing serial data", "Inverting signals"], correct: 0, hint: "Encoders do the reverse of decoders: input line to binary code." },
+                    { q: "What is BCD (Binary-Coded Decimal)?", options: ["Representing decimal digits 0-9 using 4 bits each", "Encoding text into ASCII", "Floating-point format", "Hexadecimal storage"], correct: 0, hint: "Each decimal digit is coded into a 4-bit nibble." },
+                    { q: "What is the difference between common anode and common cathode 7-segment displays?", options: ["Common anode ties all LED anodes together to Vcc; cathode ties cathodes to ground", "Common anode uses LCD technology", "Common cathode uses higher voltage", "There is no difference"], correct: 0, hint: "Common anode requires LOW (0) to light segments; common cathode requires HIGH (1)." },
+                    { q: "Which IC is a classic BCD-to-7-segment decoder/driver?", options: ["74LS47", "74LS00", "74LS138", "74LS83"], correct: 0, hint: "74LS47 drives common anode LED displays." },
+                    { q: "What is a priority encoder?", options: ["An encoder that handles multiple active inputs by selecting the highest priority one", "An encoder with the fastest propagation delay", "An encoder that only encodes 1s", "A secure encryption chip"], correct: 0, hint: "Priority encoders resolve conflicts when more than one input is active." },
+                    { q: "How many select/input lines are needed for a 4-to-16 decoder?", options: ["2", "3", "4", "5"], correct: 2, hint: "2⁴ = 16, so 4 input lines." },
+                    { q: "What does the 'Ripple Blanking' (RBI/RBO) feature do on display drivers?", options: ["Blanks out leading/trailing zero digits for cleaner display", "Creates flashing text", "Clears memory", "Resets clock"], correct: 0, hint: "Ripple blanking suppresses unnecessary zeros (e.g., 00.5 becomes .5 or 0.5)." },
+                    { q: "Which code has the property that only one bit changes between successive values?", options: ["Binary code", "Gray code", "ASCII code", "Excess-3"], correct: 1, hint: "Gray code minimizes errors in mechanical/optical encoders." },
+                    { q: "What is the Excess-3 representation of decimal 0?", options: ["0000", "0011", "1000", "0100"], correct: 1, hint: "Excess-3 is BCD + 3 (0 + 3 = 3 in binary: 0011)." },
+                    { q: "What is the main limitation of standard encoders compared to priority encoders?", options: ["They cannot handle simultaneous active inputs properly", "They are too slow", "They require too much power", "They only output decimal"], correct: 0, hint: "Standard encoders fail or output garbage if multiple inputs are HIGH." },
+                    { q: "How many segments are in a standard numeric LED display plus the decimal point?", options: ["6", "7", "8", "9"], correct: 2, hint: "7 segments (A-G) plus DP (Decimal Point) = 8." },
+                    { q: "What type of display technology requires external backlighting and liquid crystal polarization?", options: ["LED", "LCD", "CRT", "Plasma"], correct: 1, hint: "Liquid Crystal Displays (LCD) block or pass light from a backlight." },
+                    { q: "What is the BCD code for decimal 9?", options: ["1001", "1111", "1000", "0111"], correct: 0, hint: "9 in binary is 1001." },
+                    { 
+                        q: "Analyze the 74LS138 3-to-8 decoder schematic block. If select inputs CBA = 101₂ and active-low enable pins are G1=1, G2A'=0, G2B'=0, which output pin is active (LOW)?", 
+                        visual: `<svg width="300" height="100" viewBox="0 0 300 100">
+                            <rect x="70" y="10" width="160" height="80" fill="#1f2937" stroke="#3b82f6" stroke-width="2" rx="5"/>
+                            <text x="110" y="55" fill="#f3f4f6" font-size="14">74LS138 Decoder</text>
+                            <text x="15" y="30" fill="#3b82f6" font-size="12">CBA=101</text>
+                            <text x="240" y="55" fill="#10b981" font-size="12">Y5' active</text>
+                        </svg>`,
+                        options: ["Y5' (Pin active LOW)", "Y3'", "Y6'", "Y0'"], 
+                        correct: 0, 
+                        hint: "101 binary equals decimal 5. Thus output Y5' goes LOW." 
+                    },
+                    { q: "What is the purpose of enable inputs on decoder ICs?", options: ["To allow chip cascading and expansion, or gating decoder operation", "To increase power", "To reset outputs", "To invert data"], correct: 0, hint: "Enables allow multiple decoders to be combined into larger decoders." },
+                    { q: "How many 74LS138 3-to-8 decoders are needed to build a 4-to-16 decoder?", options: ["2 (using high-order address bit as enable)", "4", "1", "8"], correct: 0, hint: "Two 3-to-8 decoders plus an inverter on enable form a 4-to-16 decoder." },
+                    { q: "What is a digital comparator?", options: ["A combinational circuit that compares two binary numbers (A and B) and indicates if A=B, A>B, or A<B", "An adder", "A multiplexer", "A clock generator"], correct: 0, hint: "Comparators check numerical magnitude equality/inequality." },
+                    { q: "Which IC is a classic 4-bit magnitude comparator?", options: ["74LS85", "74LS00", "74LS138", "74LS47"], correct: 0, hint: "74LS85 compares two 4-bit words." },
+                    { q: "What is code conversion in digital systems?", options: ["Translating information from one binary code format to another (e.g., BCD to Excess-3)", "Encrypting passwords", "Compressing files", "Modulating Wi-Fi"], correct: 0, hint: "Code converters bridge disparate digital representations." },
+                    { q: "What is a parity generator/checker IC widely used in error detection?", options: ["74LS180", "74LS83", "74LS194", "74LS00"], correct: 0, hint: "74LS180 generates and checks 9-bit parity." },
+                    { q: "What is Hamming code used for?", options: ["Error detection and single-bit correction in digital data transmission and memory", "Audio compression", "Clock division", "Voltage regulation"], correct: 0, hint: "Hamming codes use redundant parity bits for error correction." },
+                    { q: "What is an ASCII-to-Baudot code converter?", options: ["Translator between teleprinter code standards", "Arithmetic adder", "Display driver", "Memory chip"], correct: 0, hint: "Translates text character sets." },
+                    { q: "What is multiplexer tree expansion?", options: ["Cascading smaller MUX chips together (e.g., 16-to-1 MUX using five 4-to-1 MUXes) to handle more inputs", "Growing trees", "Power grid routing", "Adding registers"], correct: 0, hint: "MUX trees scale up select lines." },
+                    { q: "How do you implement any Boolean function of n variables using a MUX?", options: ["Connect function minterms/inputs to data lines and n variables to MUX select lines", "Use only NOT gates", "Connect to ground", "Use flip-flops"], correct: 0, hint: "An 2^n-to-1 MUX can implement any n-variable truth table directly." },
+                    { q: "What is a lookup table (LUT) implemented with multiplexers or ROMs?", options: ["Precomputed function results stored in memory or MUX select routing", "A search engine", "A counter", "An amplifier"], correct: 0, hint: "LUTs replace complex combinational logic with static data tables." },
+                    { q: "What is the function of IC 74LS148?", options: ["8-line-to-3-line priority encoder", "3-to-8 decoder", "4-bit adder", "Shift register"], correct: 0, hint: "74LS148 is an octal priority encoder." },
+                    { q: "What is active-low logic convention?", options: ["Signals where logical state '1' or assertion is represented by low voltage (0V)", "Always 5V", "Disconnected pins", "AC power"], correct: 0, hint: "Active-low signals are denoted with a prime (') or bar." },
+                    { q: "Why are active-low control pins common in vintage TTL ICs?", options: ["Open-collector and internal transistor pull-down structures favored active-low signaling", "Lower cost of wire", "Easier typing", "Faster clock"], correct: 0, hint: "TTL architecture made active-low enables very efficient." }
+                ]
+            },
+            {
+                title: "Mod 5: Sequential Logic & Flip-Flops",
+                questions: [
+                    { q: "What is the fundamental difference between combinational and sequential logic?", options: ["Sequential logic has memory elements (feedback); combinational does not", "Combinational is faster", "Sequential only uses NOR gates", "Combinational has clock signals"], correct: 0, hint: "Sequential circuits' outputs depend on current inputs AND past state." },
+                    { q: "What condition must be avoided in an unclocked S-R latch (using NOR gates)?", options: ["S=0, R=0", "S=1, R=0", "S=0, R=1", "S=1, R=1"], correct: 3, hint: "S=1 and R=1 leads to an invalid/unstable race condition." },
+                    { q: "What is the characteristic behavior of a D flip-flop?", options: ["Output copies input (Q_next = D) on the clock edge", "Output toggles every clock", "Output is always 0", "Output stores sum"], correct: 0, hint: "D stands for Data or Delay; Q follows D." },
+                    { q: "What happens in a J-K flip-flop when both J=1 and K=1?", options: ["Set", "Reset", "Toggle (reverses current state)", "No change"], correct: 2, hint: "J=K=1 toggles the output state on each clock pulse." },
+                    { q: "What is edge-triggering in flip-flops?", options: ["Responding to voltage levels", "Triggering only on the rising or falling edge of the clock pulse", "Triggering continuously", "Manual switch trigger"], correct: 1, hint: "Edge-triggered flip-flops capture data precisely on the clock transition edge." },
+                    { q: "What is the purpose of asynchronous inputs like Preset (PR) and Clear (CLR)?", options: ["To set or reset the flip-flop immediately regardless of the clock", "To increase clock speed", "To test power consumption", "To connect to LEDs"], correct: 0, hint: "Asynchronous inputs override the clock signal." },
+                    { q: "What is a Schmitt trigger used for?", options: ["Converting slow or noisy edges into clean, fast digital pulses with hysteresis", "Multiplexing data", "Displaying digits", "Counting pulses"], correct: 0, hint: "Hysteresis prevents false triggering from noisy input signals." },
+                    { q: "What is race-around condition in J-K flip-flops?", options: ["Output oscillations when clock pulse is too long and J=K=1", "Signal moving too fast", "Power surge", "Memory leak"], correct: 0, hint: "Master-slave configuration or edge-triggering solves the J=K=1 race condition." },
+                    { q: "What does the 'T' in T flip-flop stand for?", options: ["Transfer", "Toggle", "Time", "Trigger"], correct: 1, hint: "T toggle flip-flop inverts state when T=1." },
+                    { q: "In a master-slave J-K flip-flop, when is data transferred from master to slave?", options: ["On the rising edge", "On the falling edge of the clock", "Continuously", "When power turns off"], correct: 1, hint: "Master samples on HIGH, slave copies master on falling edge." },
+                    { q: "What is setup time in a flip-flop?", options: ["Minimum time data must be stable BEFORE the active clock edge", "Time taken to boot", "Time data remains after clock", "Propagation delay"], correct: 0, hint: "Setup time ensures reliable data capture before clock transition." },
+                    { q: "What is hold time?", options: ["Time data must remain stable AFTER the active clock edge", "Time before clock", "Total cycle time", "Reset duration"], correct: 0, hint: "Hold time ensures data is locked in after clock edge." },
+                    { q: "Which flip-flop is known as a delay flip-flop?", options: ["S-R", "J-K", "D", "T"], correct: 2, hint: "D flip-flop delays input by one clock cycle." },
+                    { q: "What is metastability in digital circuits?", options: ["A stable permanent state", "An unstable intermediate state where output oscillates or hovers between 0 and 1", "Maximum speed limit", "Overheating state"], correct: 1, hint: "Occurs when setup/hold times are violated." },
+                    { q: "Which logic element forms the basic cross-coupled storage cell of an S-R latch?", options: ["Two cross-coupled inverters or NAND/NOR gates", "A single resistor", "A capacitor", "A diode bridge"], correct: 0, hint: "Cross-coupling provides regenerative feedback." },
+                    { 
+                        q: "Analyze the timing diagram for a positive edge-triggered D flip-flop below. What output Q is sampled at clock transition edge 2?", 
+                        visual: `<svg width="360" height="110" viewBox="0 0 360 110">
+                            <!-- Clock waveform -->
+                            <text x="10" y="25" fill="#3b82f6" font-size="12">CLK</text>
+                            <path d="M 40 30 L 70 30 L 70 10 L 130 10 L 130 30 L 190 30 L 190 10 L 250 10 L 250 30 L 320 30" fill="none" stroke="#3b82f6" stroke-width="2"/>
+                            <!-- D input -->
+                            <text x="10" y="65" fill="#f59e0b" font-size="12">D</text>
+                            <path d="M 40 75 L 110 75 L 110 55 L 320 55" fill="none" stroke="#f59e0b" stroke-width="2"/>
+                            <!-- Q output -->
+                            <text x="10" y="95" fill="#10b981" font-size="12">Q</text>
+                            <path d="M 40 95 L 130 95 L 130 75 L 320 75" fill="none" stroke="#10b981" stroke-width="2"/>
+                        </svg>`,
+                        options: ["Q transitions to HIGH (1) at edge 2", "Q remains LOW (0)", "Q oscillates", "Q goes High-Z"], 
+                        correct: 0, 
+                        hint: "At the rising clock edge (around x=130), D is HIGH (55 level), so Q copies D and goes HIGH." 
+                    },
+                    { q: "What is characteristic equation for a D flip-flop?", options: ["Q(next) = D", "Q(next) = JQ' + K'Q", "Q(next) = T ⊕ Q", "Q(next) = S + R'Q"], correct: 0, hint: "D flip-flop output equals D input on clock edge." },
+                    { q: "What is characteristic equation for a J-K flip-flop?", options: ["Q(next) = JQ' + K'Q", "Q(next) = D", "Q(next) = T + Q", "Q(next) = S'R"], correct: 0, hint: "JK equation accounts for Set (J), Reset (K), and Toggle." },
+                    { q: "What is characteristic equation for a T flip-flop?", options: ["Q(next) = T ⊕ Q", "Q(next) = T'", "Q(next) = TQ", "Q(next) = T + Q'"], correct: 0, hint: "T toggles state when T=1, so Q_next = T ⊕ Q." },
+                    { q: "What is excitation table used for in sequential circuit design?", options: ["Determining required flip-flop control inputs (J, K, D, T) given present and next states", "Measuring power", "Checking soldering", "Decoding displays"], correct: 0, hint: "Excitation tables guide state machine flip-flop wiring." },
+                    { q: "What is a Mealy state machine?", options: ["Finite state machine where outputs depend on current state AND present inputs", "Outputs depend on state only", "Machine with no states", "Analog processor"], correct: 0, hint: "Mealy outputs change asynchronously with input changes." },
+                    { q: "What is a Moore state machine?", options: ["Finite state machine where outputs depend solely on the current state", "Outputs depend on inputs", "Random output machine", "Combinational only"], correct: 0, hint: "Moore outputs are synchronized strictly to clock state changes." },
+                    { q: "What is state reduction in sequential design?", options: ["Minimizing the total number of states in an FSM without altering input/output behavior", "Deleting memory", "Lowering clock speed", "Reducing power"], correct: 0, hint: "State reduction minimizes flip-flop count." },
+                    { q: "What is clock skew in synchronous digital systems?", options: ["Difference in arrival times of the clock signal at different clock-driven registers", "Clock frequency", "Clock jitter", "Power loss"], correct: 0, hint: "Clock skew can violate setup/hold times if excessive." },
+                    { q: "What is clock jitter?", options: ["Temporal variation or phase uncertainty in the clock period edge", "Clock skew across chips", "Voltage noise", "Signal reflection"], correct: 0, hint: "Jitter is cycle-to-cycle timing instability." },
+                    { q: "What is synchronous sequential logic?", options: ["Circuits whose state changes occur only at specific clock edge transitions", "Asynchronous circuits", "Combinational adders", "Analog filters"], correct: 0, hint: "Synchronous systems rely on a master clock." },
+                    { q: "What is asynchronous sequential logic?", options: ["Circuits whose state changes can occur at any time in response to input changes without a clock", "Clocked circuits", "ROM memory", "Decoders"], correct: 0, hint: "Asynchronous circuits use feedback without clock signals." },
+                    { q: "What is pulse-triggered (master-slave) latch operation?", options: ["Latch samples input during clock level HIGH and locks/transfers on clock edge/LOW", "Edge-triggered only", "Unclocked", "Manual"], correct: 0, hint: "Master-slave structures prevent transparency race conditions." },
+                    { q: "What is static RAM cell structure built from?", options: ["Cross-coupled inverters forming a bistable latch with access transistors", "Capacitors", "Diodes", "Resistors only"], correct: 0, hint: "SRAM cells use 6 transistors (6T)." },
+                    { q: "Why do sequential circuits require feedback loops?", options: ["To store past state history (memory capability)", "To amplify signals", "To invert logic", "To generate clock pulses"], correct: 0, hint: "Feedback provides the memory element needed for sequential operation." }
+                ]
+            },
+            {
+                title: "Mod 6: Counters & Frequency Dividers",
+                questions: [
+                    { q: "What is the primary function of a digital counter?", options: ["To count clock pulses or events", "To perform division", "To display text", "To store permanent ROM data"], correct: 0, hint: "Counters track the number of clock pulses received." },
+                    { q: "What is an asynchronous (ripple) counter?", options: ["Flip-flop clock inputs are connected in cascade (output of one clocks the next)", "All flip-flops share the exact same clock simultaneously", "Counter with no clock", "Counter with random output"], correct: 0, hint: "Ripple counters ripple the clock through successive stages, causing propagation delay accumulation." },
+                    { q: "What is the 'modulus' (Mod) of a counter?", options: ["Total number of unique states it sequences through before repeating", "Maximum frequency", "Number of pins", "Power consumption"], correct: 0, hint: "Mod-N counter counts N states (e.g., Mod-10 for decade counter)." },
+                    { q: "What distinguishes a synchronous counter from an asynchronous counter?", options: ["All flip-flops are clocked simultaneously by a common clock pulse", "Synchronous counters are slower", "Synchronous counters use no flip-flops", "Asynchronous counters never use logic gates"], correct: 0, hint: "Synchronous counters eliminate ripple delay by clocking all FFs at once." },
+                    { q: "How many flip-flops are required to construct a Mod-16 binary counter?", options: ["2", "4", "8", "16"], correct: 1, hint: "2⁴ = 16 states, so 4 flip-flops." },
+                    { q: "What is a decade counter?", options: ["A counter that counts from 0 to 9 (Mod-10)", "A counter with 10 outputs", "A 10-bit counter", "A counter that runs for 10 seconds"], correct: 0, hint: "Decade counters reset after 10 states (0000 to 1001)." },
+                    { q: "What is a down counter?", options: ["A counter that counts downwards (e.g., 3, 2, 1, 0)", "A broken counter", "A counter placed on the floor", "A counter with negative voltage"], correct: 0, hint: "Down counters decrement their value on each clock pulse." },
+                    { q: "What is a ring counter?", options: ["A shift register with feedback where a single '1' circulates", "A counter shaped like a ring", "An audio counter", "A counter for phone lines"], correct: 0, hint: "Ring counters shift a single active bit in a closed loop." },
+                    { q: "What is a Johnson counter (twisted-ring counter)?", options: ["Ring counter with inverted feedback from output back to input", "Counter invented by Mr. Johnson", "Counter that counts primes", "Asynchronous ripple counter"], correct: 0, hint: "Johnson counter generates a 2n sequence from n flip-flops." },
+                    { q: "What causes 'glitches' in asynchronous counters?", options: ["Cumulative propagation delays across cascaded stages", "High battery voltage", "Good soldering", "Using synchronous clocks"], correct: 0, hint: "Ripple delay creates temporary false output decoding states." },
+                    { q: "How do you achieve a Mod-6 counter using a Mod-8 binary counter?", options: ["Use external combinational logic (e.g., NAND gate) to reset the counter at count 6 (0110)", "Add 2 extra flip-flops", "Change input voltage", "Reverse clock polarity"], correct: 0, hint: "Decoding state 6 to trigger a clear/reset resets the count early." },
+                    { q: "What is a bidirectional counter?", options: ["A counter that can count both up and down via an up/down control input", "A counter with two outputs", "A counter that counts twice as fast", "A counter for AC signals"], correct: 0, hint: "Up/Down counters have a direction control pin." },
+                    { q: "What is the maximum binary count for a 3-bit binary counter?", options: ["7 (111)", "8 (1000)", "6 (110)", "15 (1111)"], correct: 0, hint: "0 to 7 = 8 states, max binary value is 7 (111)." },
+                    { q: "Why are synchronous counters preferred in high-speed applications?", options: ["They eliminate cumulative propagation delay glitches", "They are cheaper", "They require fewer gates", "They don't need power"], correct: 0, hint: "Simultaneous clocking avoids propagation delay accumulation." },
+                    { q: "What is truncation in counters?", options: ["Modifying a natural binary counter to cycle through fewer states", "Cutting the wires", "Increasing modulus", "Stopping the clock permanently"], correct: 0, hint: "Truncating skips or resets early to achieve non-binary moduli like Mod-10 or Mod-12." },
+                    { 
+                        q: "Analyze the 3-bit ripple up-counter timing diagram below. When does output $Q_2$ toggle relative to $Q_1$?", 
+                        visual: `<svg width="360" height="110" viewBox="0 0 360 110">
+                            <!-- Q0 -->
+                            <text x="10" y="25" fill="#3b82f6" font-size="12">Q0</text>
+                            <path d="M 40 30 L 100 30 L 100 10 L 160 10 L 160 30 L 220 30 L 220 10 L 280 10 L 280 30" fill="none" stroke="#3b82f6" stroke-width="2"/>
+                            <!-- Q1 (clocks on falling edge of Q0) -->
+                            <text x="10" y="65" fill="#f59e0b" font-size="12">Q1</text>
+                            <path d="M 40 75 L 160 75 L 160 55 L 280 55" fill="none" stroke="#f59e0b" stroke-width="2"/>
+                            <!-- Q2 -->
+                            <text x="10" y="95" fill="#10b981" font-size="12">Q2</text>
+                            <path d="M 40 95 L 280 95" fill="none" stroke="#10b981" stroke-width="2"/>
+                        </svg>`,
+                        options: ["Q2 toggles on the falling edge of Q1", "Q2 toggles simultaneously with Q0", "Q2 does not toggle", "Q2 toggles on rising clock"], 
+                        correct: 0, 
+                        hint: "In ripple counters, each stage is clocked by the output of the previous stage." 
+                    },
+                    { q: "What is synchronous binary up/down counter design method?", options: ["Using AND/OR logic driving J-K or D inputs to determine state transitions on each clock", "Random wiring", "RC delay circuits", "Inverters only"], correct: 0, hint: "Synchronous counters use combinational logic on FF inputs." },
+                    { q: "What is look-ahead carry in synchronous counters?", options: ["Using parallel carry-enable gates (TC gates) to enable higher-stage flip-flops instantly without cascading delay", "Slower clock", "Power boost", "Reset circuit"], correct: 0, hint: "Carry lookahead speeds up high-bit counter counting." },
+                    { q: "What is a modulo-12 (MOD-12) counter used for in digital clocks?", options: ["Hours counting (1 to 12 or 0 to 11)", "Minutes", "Seconds", "Alarm setting"], correct: 0, hint: "MOD-12 counts 12 states before recycling." },
+                    { q: "What is an asynchronous clear input on a counter IC?", options: ["Instantly resets all counter flip-flop outputs to 0 independent of clock pulses", "Stops power", "Speeds up clock", "Inverts count direction"], correct: 0, hint: "Async clear overrides normal counting." },
+                    { q: "Which IC is a classic synchronous 4-bit binary up/down counter?", options: ["74LS193", "74LS00", "74LS138", "74LS47"], correct: 0, hint: "74LS193 is a synchronous 4-bit binary up/down counter with separate up/down clocks." },
+                    { q: "What is frequency division using counters?", options: ["Dividing input clock frequency by counter modulus ($f_{out} = f_{in} / N$)", "Multiplying frequency", "Phase shifting", "Signal amplification"], correct: 0, hint: "Every counter stage divides clock frequency by 2." },
+                    { q: "How do you achieve a divide-by-60 frequency divider for clock seconds/minutes?", options: ["Cascading a MOD-10 counter (decade) with a MOD-6 counter", "Using a single 1-bit flip-flop", "Using a resistor network", "Connecting to ground"], correct: 0, hint: "10 × 6 = 60." },
+                    { q: "What is a presettable counter?", options: ["A counter whose internal state can be loaded with an initial binary value via parallel data inputs", "A fixed counter", "An analog counter", "A broken counter"], correct: 0, hint: "Presettable counters support load control pins." },
+                    { q: "What is ripple blanking in counter-driven displays?", options: ["Suppressing leading zeros on numeric display readouts", "Flashing digits", "Clearing memory", "Resetting count"], correct: 0, hint: "Ripple blanking cleans up leading zeros like 007 to 7." },
+                    { q: "What is a decade ripple counter IC standard?", options: ["74LS90", "74LS83", "74LS00", "74LS194"], correct: 0, hint: "74LS90 is a classic decade/binary ripple counter." },
+                    { q: "What is state lockout in counters?", options: ["Entering unused invalid states from which the counter cannot escape without external reset", "Normal counting", "Power saving", "Clock halt"], correct: 0, hint: "Lockout happens when unused states lack transitions to valid cycles." },
+                    { q: "How do you cure state lockout in counter designs?", options: ["Modify unused state transitions in K-maps to point to valid states (e.g., reset to 0)", "Throw away chip", "Increase voltage", "Add battery"], correct: 0, hint: "Ensure every unused state leads to a valid state." },
+                    { q: "What is Johnson counter state count for n flip-flops?", options: ["2n states", "n^2 states", "2^n states", "n states"], correct: 0, hint: "An n-stage Johnson counter cycles through 2n states." },
+                    { q: "What is ring counter state count for n flip-flops?", options: ["n states", "2n states", "2^n states", "n! states"], correct: 0, hint: "An n-stage ring counter circulates a single bit across n states." }
+                ]
+            },
+            {
+                title: "Mod 7: Shift Registers & Applications",
+                questions: [
+                    { q: "What is the primary function of a shift register?", options: ["To store and shift digital data (bits) serially or in parallel", "To perform division", "To display graphics", "To generate clock signals"], correct: 0, hint: "Shift registers shift data bits left or right upon clock pulses." },
+                    { q: "What does SISO stand for in shift registers?", options: ["Serial-In, Serial-Out", "Single-Input, Single-Output", "Synchronous-In, Synchronous-Out", "Serial-In, Switch-Out"], correct: 0, hint: "Data enters serially and exits serially." },
+                    { q: "What is the main advantage of SIPO (Serial-In, Parallel-Out)?", options: ["Converts serial data stream into parallel word format", "Faster shifting", "Uses fewer pins", "Stores infinite data"], correct: 0, hint: "SIPO collects serial bits and outputs them all at once in parallel." },
+                    { q: "What is PISO (Parallel-In, Serial-Out) used for?", options: ["Converting parallel data bytes into serial data streams (e.g., for UART transmission)", "Displaying numbers", "Counting pulses", "Inverting signals"], correct: 0, hint: "PISO serializes parallel data for transmission over a single line." },
+                    { q: "What is a bidirectional shift register?", options: ["A register that can shift data either to the left or to the right", "A register with two clocks", "A register that stores two bytes", "A register with AC power"], correct: 0, hint: "Controlled shift direction (left/right)." },
+                    { q: "What is a universal shift register?", options: ["A versatile IC (like 74LS194) supporting serial/parallel input/output and bidirectional shifting", "A register used worldwide", "A register with no clock", "A ROM chip"], correct: 0, hint: "Universal shift registers can do SISO, SIPO, PISO, PIPO." },
+                    { q: "How many clock pulses are needed to load an 8-bit word serially into an 8-bit shift register?", options: ["1", "4", "8", "16"], correct: 2, hint: "Serial loading takes one clock per bit (8 clocks for 8 bits)." },
+                    { q: "How many clock pulses are needed to load an 8-bit word into a parallel-load shift register?", options: ["1", "4", "8", "16"], correct: 0, hint: "Parallel loading happens simultaneously in 1 clock pulse." },
+                    { q: "What is a recirculating shift register?", options: ["A register where output is fed back into the serial input to retain data", "A broken register", "A cooling register", "A register with no power"], correct: 0, hint: "Feedback loop preserves data continuously." },
+                    { q: "Which IC is a classic 4-bit universal shift register?", options: ["74LS194", "74LS00", "74LS47", "74LS83"], correct: 0, hint: "74LS194 is the standard TTL 4-bit bidirectional universal shift register." },
+                    { q: "What is serial data transmission?", options: ["Sending bits sequentially one after another over a single line", "Sending all bits simultaneously", "Sending bits in random order", "Wireless transmission only"], correct: 0, hint: "Serial = one bit after another." },
+                    { q: "What is parallel data transmission?", options: ["Sending all bits of a word simultaneously across multiple wires", "Sending bits one by one", "Audio transmission", "Analog transmission"], correct: 0, hint: "Parallel = simultaneous bus lines." },
+                    { q: "What is a UART primarily used for?", options: ["Asynchronous serial communication between devices using shift registers", "Adding numbers", "Decoding 7-segment displays", "Generating clock pulses"], correct: 0, hint: "Universal Asynchronous Receiver-Transmitter uses shift registers for serial comms." },
+                    { q: "What happens to data in a SISO register after 4 clock shifts if 4 bits were loaded?", options: ["It has shifted out of the register", "It remains stored forever", "It multiplies by 2", "It inverts"], correct: 0, hint: "Shifting through pushes old data out." },
+                    { q: "What is a key application of shift registers in arithmetic logic units?", options: ["Binary multiplication and division (shifting left multiplies by 2, right divides by 2)", "Displaying text", "Grounding circuits", "Voltage regulation"], correct: 0, hint: "Bit shifting is equivalent to multiplying or dividing by powers of 2." },
+                    { 
+                        q: "Analyze the 4-bit serial-in parallel-out (SIPO) shift register schematic below. If input bit stream '1011' is shifted in with 4 clock pulses (LSB first), what is the parallel output $Q_3 Q_2 Q_1 Q_0$?", 
+                        visual: `<svg width="340" height="100" viewBox="0 0 340 100">
+                            <rect x="20" y="20" width="80" height="60" fill="#1f2937" stroke="#3b82f6" stroke-width="2"/>
+                            <text x="35" y="55" fill="#f3f4f6" font-size="12">FF0 (Q0)</text>
+                            <line x1="100" y1="50" x2="130" y2="50" stroke="#3b82f6" stroke-width="2"/>
+                            <rect x="130" y="20" width="80" height="60" fill="#1f2937" stroke="#3b82f6" stroke-width="2"/>
+                            <text x="145" y="55" fill="#f3f4f6" font-size="12">FF1 (Q1)</text>
+                            <text x="230" y="55" fill="#10b981" font-size="12">Shift Data Stream</text>
+                        </svg>`,
+                        options: ["1011₂", "1101₂", "0110₂", "0000₂"], 
+                        correct: 0, 
+                        hint: "Shifting bits '1011' serially results in parallel outputs matching the exact bit sequence." 
+                    },
+                    { q: "What is a Linear Feedback Shift Register (LFSR)?", options: ["A shift register whose input bit is driven by a linear function (XOR) of its overall previous state", "A linear amplifier", "An adder register", "A RAM cache"], correct: 0, hint: "LFSRs are widely used for pseudorandom number generation and CRC checking." },
+                    { q: "What is a barrel shifter?", options: ["A digital circuit that can shift data by any number of bits in a single clock cycle", "A slow barrel", "A serial register", "A memory bank"], correct: 0, hint: "Barrel shifters perform multi-bit shifts instantly combinatorially." },
+                    { q: "What is serial adder architecture?", options: ["An adder that adds two binary numbers one bit at a time using a single full adder and a shift register", "Parallel adder", "ROM adder", "Manual adder"], correct: 0, hint: "Serial adders trade speed for hardware minimization." },
+                    { q: "What is a switch-tail ring counter (Johnson counter)?", options: ["Ring counter with inverted feedback from last output back to first input", "Tail light circuit", "Binary counter", "Decoder"], correct: 0, hint: "Johnson counter creates 2n decoding states." },
+                    { q: "What is Time-Division Multiplexing (TDM)?", options: ["Transmitting multiple digital data streams over a single channel by allocating rotating time slots using shift registers/MUXes", "Frequency splitting", "Analog amplification", "Clock generation"], correct: 0, hint: "TDM interleaves multiple channels over time." },
+                    { q: "How is serial data converted to parallel data?", options: ["Using a Serial-In, Parallel-Out (SIPO) shift register", "Using an adder", "Using a decoder", "Using a battery"], correct: 0, hint: "SIPO registers accumulate bits and dump them in parallel." },
+                    { q: "How is parallel data converted to serial data?", options: ["Using a Parallel-In, Serial-Out (PISO) shift register", "Using a RAM chip", "Using a counter", "Using an inverter"], correct: 0, hint: "PISO registers load a byte in parallel and shift it out bit by bit." },
+                    { q: "What is a bidirectional shift register control mode?", options: ["Control pin determines whether bits shift left (towards MSB) or right (towards LSB)", "Clock reversal", "Power toggle", "Reset"], correct: 0, hint: "Shift direction is controlled by mode multiplexers inside the register." },
+                    { q: "What is a scratchpad memory?", options: ["Temporary high-speed storage register file in processors", "Hard disk partition", "Permanent ROM", "Display buffer"], correct: 0, hint: "Scratchpad registers hold temporary computation data." },
+                    { q: "What is a shift register sequence generator?", options: ["Using an LFSR to generate repeating pseudorandom binary test sequences", "Clock generator", "Audio synth", "Power supply"], correct: 0, hint: "LFSRs generate maximal-length binary sequences." },
+                    { q: "What is a signature analyzer?",options: ["Test instrument using LFSRs to compress lengthy digital logic test bit streams into a signature hex code", "Document signer", "Biometric scanner", "Oscilloscope"], correct: 0, hint: "Signature analyzers verify complex logic board integrity." },
+                    { q: "What is the maximum cycle length (period) of an n-bit maximal LFSR?", options: ["2^n - 1 states", "2^n states", "n states", "n^2 states"], correct: 0, hint: "Maximal-length LFSRs cycle through all possible states except all-zeros." },
+                    { q: "Why is the all-zeros state forbidden in standard maximal LFSRs?", options: ["Because XOR feedback with all zeros yields zero permanently (lockup)", "It consumes too much power", "It blows fuses", "It overflows memory"], correct: 0, hint: "All-zeros trap standard XOR LFSRs permanently." },
+                    { q: "What is a universal shift register IC 74LS194 mode control capability?", options: ["Supports parallel load, shift right, shift left, and hold (do nothing) modes via S1, S0 pins", "Only addition", "Counting only", "Decoding only"], correct: 0, hint: "Mode pins S1 and S0 configure 74LS194 operation." }
+                ]
+            },
+            {
+                title: "Mod 8: Arithmetic Circuits & ALUs",
+                questions: [
+                    { 
+                        q: "What are the logic gates required to implement a basic Half-Adder circuit?", 
+                        visual: `<svg width="280" height="90" viewBox="0 0 280 90">
+                            <text x="10" y="30" fill="#3b82f6" font-size="12">A</text>
+                            <text x="10" y="65" fill="#3b82f6" font-size="12">B</text>
+                            <rect x="70" y="15" width="60" height="60" fill="#1f2937" stroke="#3b82f6" stroke-width="2" rx="5"/>
+                            <text x="85" y="50" fill="#f3f4f6" font-size="14">XOR & AND</text>
+                            <line x1="130" y1="45" x2="200" y2="45" stroke="#10b981" stroke-width="2"/>
+                            <text x="210" y="50" fill="#f3f4f6" font-size="12">Sum & Carry</text>
+                        </svg>`,
+                        options: ["XOR for Sum, AND for Carry", "OR for Sum, NOT for Carry", "NAND only", "NOR and OR"], 
+                        correct: 0, 
+                        hint: "Sum = A ⊕ B, Carry = A · B." 
+                    },
+                    { q: "Why is a full adder required instead of a half adder for multi-bit addition?", options: ["To account for the carry-in from the previous lower stage", "It is smaller", "It uses fewer gates", "It doesn't need power"], correct: 0, hint: "Full adders handle 3 inputs: A, B, and Carry-in (Cin)." },
+                    { q: "What logic gates make up a half-adder?", options: ["XOR for Sum, AND for Carry", "OR for Sum, NOT for Carry", "NAND only", "NOR and OR"], correct: 0, hint: "Sum = A ⊕ B, Carry = A · B." },
+                    { q: "How is binary subtraction usually implemented in modern digital processors?", options: ["Using addition with 2's complement representation", "Using dedicated subtraction gates only", "Using division circuits", "By shifting left"], correct: 0, hint: "A - B is computed as A + (-B) using 2's complement." },
+                    { q: "How do you find the 2's complement of a binary number?", options: ["Invert all bits (1's complement) and add 1", "Add 2", "Reverse bit order", "Invert bits only"], correct: 0, hint: "Flip the bits and add 1 to get the negative representation." },
+                    { q: "What is the 4-bit binary IC adder widely used in TTL logic?", options: ["74LS83", "74LS00", "74LS194", "74LS47"], correct: 0, hint: "74LS83 is a 4-bit binary full adder IC." },
+                    { q: "What is ripple-carry delay in multi-bit adders?", options: ["Delay caused by carry propagation sequentially from one adder stage to the next", "Clock jitter", "Input noise", "Memory lag"], correct: 0, hint: "Each adder must wait for the carry-in from the previous adder." },
+                    { q: "How does a carry-lookahead adder (CLA) speed up addition?", options: ["By calculating carry signals simultaneously using high-speed logic instead of waiting to ripple", "By using fewer bits", "By lowering voltage", "By running without a clock"], correct: 0, hint: "Carry-lookahead logic computes carries in parallel, bypassing ripple delay." },
+                    { q: "What is the result of adding binary 0110 (+6) and 0011 (+3)?", options: ["1001 (+9)", "1010", "0111", "1111"], correct: 0, hint: "6 + 3 = 9 (1001₂)." },
+                    { q: "What is overflow in signed binary arithmetic?", options: ["When the result exceeds the representation range of the bit-width", "When voltage is too high", "When carry-out is 0", "When adding zero"], correct: 0, hint: "Overflow occurs when positive+positive yields negative, etc." },
+                    { q: "What does a half-subtractor produce?", options: ["Difference and Borrow", "Sum and Carry", "Product and Remainder", "Inverted output"], correct: 0, hint: "Half subtractor outputs Difference (XOR) and Borrow (A'B)." },
+                    { q: "In 2's complement 4-bit system, what is the range of representable numbers?", options: ["-8 to +7", "0 to 15", "-7 to +7", "-15 to +15"], correct: 0, hint: "-(2^(n-1)) to +(2^(n-1) - 1) -> -8 to +7 for 4 bits." },
+                    { q: "What is the 1's complement of binary 1011?", options: ["0100", "0101", "1011", "1100"], correct: 0, hint: "Invert 1011 -> 0100." },
+                    { q: "When adding two numbers in 2's complement, what indicates no overflow?", options: ["Carry into sign bit equals carry out of sign bit", "Carry out is always 1", "Sum is zero", "Inputs are equal"], correct: 0, hint: "Equal carries into and out of the MSB mean no arithmetic overflow." },
+                    { q: "What is the purpose of the Mode control pin in a 7483-based adder/subtractor circuit?", options: ["To control whether the circuit performs addition or subtraction (by XORing B inputs)", "To turn off the chip", "To change clock frequency", "To reset outputs"], correct: 0, hint: "Mode=0 adds, Mode=1 inverts B for 2's complement subtraction." },
+                    { 
+                        q: "Analyze the full adder block diagram below. If inputs are A=1, B=1, $C_{in}=1$, what are the resulting Sum and $C_{out}$ values?", 
+                        visual: `<svg width="300" height="100" viewBox="0 0 300 100">
+                            <rect x="70" y="15" width="160" height="70" fill="#1f2937" stroke="#3b82f6" stroke-width="2" rx="5"/>
+                            <text x="110" y="55" fill="#f3f4f6" font-size="14">Full Adder Cell</text>
+                            <text x="15" y="35" fill="#3b82f6" font-size="12">A=1, B=1, Cin=1</text>
+                            <text x="240" y="55" fill="#10b981" font-size="12">Sum=1, Cout=1</text>
+                        </svg>`,
+                        options: ["Sum = 1, Cout = 1", "Sum = 0, Cout = 0", "Sum = 1, Cout = 0", "Sum = 0, Cout = 1"], 
+                        correct: 0, 
+                        hint: "1 + 1 + 1 = 3 in decimal = 11₂ in binary (Sum=1, Carry=1)." 
+                    },
+                    { q: "What is an Arithmetic Logic Unit (ALU)?", options: ["Central processor component that performs arithmetic (add, subtract) and logic (AND, OR, XOR) operations", "Display controller", "Clock generator", "Memory cache"], correct: 0, hint: "ALU is the core calculation engine of a CPU." },
+                    { q: "What is a BCD adder circuit used for?", options: ["Adding two BCD digits and correcting the result if sum exceeds 9 by adding 6 (0110₂)", "Binary multiplication", "Subtraction only", "Floating point math"], correct: 0, hint: "BCD adders include correction logic for decimal boundaries." },
+                    { q: "How does a binary multiplier work using combinational logic?", options: ["Using an array of AND gates for partial products combined with full adders", "Using shift registers only", "Using decoders", "Using inverters"], correct: 0, hint: "Array multipliers generate partial products and sum them up." },
+                    { q: "What is Booth's algorithm used for?", options: ["Efficient signed binary multiplication in computer arithmetic", "Division", "Square roots", "Decoding display"], correct: 0, hint: "Booth's algorithm multiplies signed 2's complement numbers efficiently." },
+                    { q: "What is serial binary division circuit structure?", options: ["Using shift registers, subtractors, and control logic to divide numbers bit by bit", "Parallel divider", "ROM table", "Combinational adder"], correct: 0, hint: "Serial dividers use iterative subtraction and shifting." },
+                    { q: "What is an Arithmetic Left Shift equivalent to?", options: ["Multiplying the signed number by 2", "Dividing by 2", "Inverting bits", "Adding 1"], correct: 0, hint: "Shifting left by 1 multiplies binary weight by 2." },
+                    { q: "What is an Arithmetic Right Shift equivalent to?", options: ["Dividing the signed number by 2 (preserving sign bit)", "Multiplication by 2", "Clearing memory", "Resetting count"], correct: 0, hint: "Arithmetic right shift preserves the MSB sign bit." },
+                    { q: "What is a Logical Shift vs Arithmetic Shift?", options: ["Logical shift fills shifted vacancies with zeros; arithmetic shift preserves the sign bit (MSB)", "No difference", "Logical shift is faster", "Arithmetic shift uses RAM"], correct: 0, hint: "Logical shift treats data as unsigned." },
+                    { q: "What is carry-propagate and carry-generate in Carry-Lookahead adders?", options: ["P = A ⊕ B (propagate) and G = A · B (generate)", "Sum and Difference", "Inputs and Outputs", "Clock and Reset"], correct: 0, hint: "CLA uses generate and propagate signals to bypass ripple delay." },
+                    { q: "What is a bit-slice ALU architecture?", options: ["Modular processor design allowing multiple small ALU chips (e.g., 4-bit slices) to cascade into 16-bit or 32-bit words", "Single chip processor", "Memory slice", "Display driver"], correct: 0, hint: "Bit-slice processors built custom-width supercomputers." },
+                    { q: "What is floating-point arithmetic hardware (FPU)?", options: ["Dedicated hardware circuitry for performing operations on IEEE 754 real numbers", "Integer adder", "Register file", "Decoder"], correct: 0, hint: "FPUs accelerate decimal/scientific calculations." },
+                    { q: "What is saturation arithmetic?", options: ["Arithmetic where results exceeding maximum/minimum limits peg at the limit instead of wrapping around", "Overflow wrapping", "Normal addition", "Negative voltage"], correct: 0, hint: "Saturation arithmetic prevents wrap-around errors in digital signal processing." },
+                    { q: "What is a barrel shifter used for in ALUs?", options: ["Performing multi-bit shifts or rotations in a single clock cycle", "Adding numbers", "Storing bytes", "Decoding addresses"], correct: 0, hint: "Barrel shifters enable fast floating-point normalization and bit manipulation." },
+                    { q: "Why is carry-skip (block carry-skip) adder used?", options: ["To speed up multi-bit addition by bypassing carry propagation across unchanging blocks", "To reduce chip size", "To increase power", "To generate clock"], correct: 0, hint: "Carry-skip adders offer a trade-off between ripple-carry and carry-lookahead speed." }
+                ]
+            },
+            {
+                title: "Mod 9: Memory Devices, RAM, ROM & Programmable Logic",
+                questions: [
+                    { q: "What is the primary difference between RAM and ROM?", options: ["RAM is volatile (lost on power-off); ROM is non-volatile (permanent)", "RAM is read-only", "ROM is faster than RAM", "RAM stores only text"], correct: 0, hint: "RAM = Random Access Memory (volatile); ROM = Read-Only Memory (non-volatile)." },
+                    { q: "What does SRAM stand for, and what is its key feature?", options: ["Static RAM; uses flip-flop latch cells, faster, no refresh required", "Synchronous RAM; needs clock", "Simple RAM; cheap", "Sequential RAM; shifts data"], correct: 0, hint: "SRAM stores bits in static flip-flop cells without needing capacitor refresh." },
+                    { q: "What does DRAM stand for, and why does it need refreshing?", options: ["Dynamic RAM; stores data in capacitors that discharge and leak over time", "Digital RAM; needs power", "Dual RAM; two ports", "Direct RAM; no cache"], correct: 0, hint: "DRAM uses capacitors which leak charge, requiring periodic refresh cycles." },
+                    { q: "What is a PROM?", options: ["Programmable ROM; can be programmed once by the user", "Permanent ROM; factory made", "Plastic ROM", "Parity ROM"], correct: 0, hint: "PROM is programmed once using fuses/antifuses." },
+                    { q: "What distinguishes EPROM from PROM?", options: ["EPROM can be erased using ultraviolet (UV) light and reprogrammed", "EPROM is volatile", "EPROM holds more data", "EPROM is cheaper"], correct: 0, hint: "EPROM has a quartz window for UV light erasure." },
+                    { q: "What is EEPROM?", options: ["Electrically Erasable Programmable ROM; can be erased and rewritten electrically", "Extended EPROM", "Energy Efficient PROM", "Embedded RAM"], correct: 0, hint: "EEPROM allows byte-level electrical erasure without UV light." },
+                    { q: "What is Flash memory?", options: ["A type of EEPROM that is erased and programmed in large block sectors", "Fast RAM", "Volatile cache", "Optical storage"], correct: 0, hint: "Flash memory (SSDs, USB drives) uses block-based electrical erasure." },
+                    { q: "What is memory address capacity for a memory IC with 10 address lines ($A_0-A_9$)?", options: ["1024 locations (1K)", "512 locations", "2048 locations", "100 locations"], correct: 0, hint: "2¹⁰ = 1024 bytes (1K)." },
+                    { q: "What is memory word width (data bus width)?", options: ["The number of bits stored or accessed simultaneously in a single memory location", "Total chip capacity", "Number of address pins", "Clock speed"], correct: 0, hint: "Data pins (e.g., 8x8 means 8-bit words)." },
+                    { q: "What is NVSRAM (Non-Volatile SRAM)?", options: ["SRAM backed by shadow EEPROM cells to save data during power loss", "Volatile SRAM", "Slow RAM", "Network RAM"], correct: 0, hint: "Combines fast SRAM speed with non-volatile backup storage." },
+                    { q: "What is the purpose of Chip Select (CS) or Chip Enable (CE) pins on memory chips?", options: ["To enable or disable the specific memory chip in multi-chip memory arrays", "To select read or write mode", "To supply power", "To ground the chip"], correct: 0, hint: "CS enables the chip for bus communication." },
+                    { q: "What is magnetic hard disk storage compared to solid-state memory?", options: ["Electromechanical storage using magnetic platters and read/write heads", "Pure silicon semiconductor", "Optical laser storage", "Volatile RAM"], correct: 0, hint: "HDDs use spinning magnetic disks." },
+                    { q: "What is optical storage (CD, DVD, Blu-ray)?", options: ["Storage using laser beams to read/write pits and lands on a reflective disc", "Magnetic tape", "Flash memory", "RAM"], correct: 0, hint: "Optical drives use lasers." },
+                    { q: "What is memory bandwidth?", options: ["The rate at which data can be read from or stored into memory", "Physical width of memory chip", "Number of address lines", "Power consumption"], correct: 0, hint: "Bandwidth = data transfer rate (bytes/sec)." },
+                    { q: "Why is SRAM used for CPU cache memory instead of DRAM?", options: ["SRAM is significantly faster (no refresh latency)", "SRAM is much cheaper", "SRAM holds more data", "SRAM is non-volatile"], correct: 0, hint: "Speed is critical for CPU caches, making SRAM ideal despite higher cost." },
+                    { 
+                        q: "Analyze the memory decoding block diagram below. If a memory chip has 12 address lines ($A_0-A_{11}$) and 8 data output lines, what is its total storage capacity in bytes (or KB)?", 
+                        visual: `<svg width="320" height="100" viewBox="0 0 320 100">
+                            <rect x="70" y="15" width="180" height="70" fill="#1f2937" stroke="#3b82f6" stroke-width="2" rx="5"/>
+                            <text x="100" y="55" fill="#f3f4f6" font-size="14">Memory IC (12 Addr, 8 Data)</text>
+                            <text x="15" y="35" fill="#3b82f6" font-size="12">A0-A11 lines</text>
+                            <text x="260" y="55" fill="#10b981" font-size="12">4096 x 8 (4KB)</text>
+                        </svg>`,
+                        options: ["4096 bytes (4 KB)", "1024 bytes (1 KB)", "8192 bytes (8 KB)", "65536 bytes (64 KB)"], 
+                        correct: 0, 
+                        hint: "2¹² = 4096 locations (4K), each holding 8 bits (1 byte) -> 4 KB." 
+                    },
+                    { q: "What is a PLA (Programmable Logic Array)?", options: ["Programmable device containing a programmable AND array followed by a programmable OR array", "Fixed ROM", "Decoder", "RAM chip"], correct: 0, hint: "PLAs have both programmable AND and OR planes." },
+                    { q: "What is a PAL (Programmable Array Logic)?", options: ["Programmable device with a programmable AND array and a fixed OR array", "Fixed AND, programmable OR", "RAM", "Microcontroller"], correct: 0, hint: "PALs have programmable AND gates feeding fixed OR gates." },
+                    { q: "What is a GAL (Generic Array Logic)?", options: ["Electrically erasable and reprogrammable PAL variant using CMOS/EEPROM technology", "Permanent ROM", "Display driver", "Counter IC"], correct: 0, hint: "GALs replaced PALs with reprogrammable CMOS cells." },
+                    { q: "What is an FPGA (Field-Programmable Gate Array)?", options: ["Semiconductor device containing programmable logic blocks (CLBs) and interconnect fabrics configured by users", "Fixed CPU", "Memory chip only", "Analog amplifier"], correct: 0, hint: "FPGAs implement custom hardware logic dynamically." },
+                    { q: "What is CPLD (Complex Programmable Logic Device)?", options: ["Programmable logic device consisting of multiple PAL-like macrocell blocks connected by a global interconnect matrix", "Microcontroller", "RAM module", "Decoder"], correct: 0, hint: "CPLDs bridge simple PALs and massive FPGAs." },
+                    { q: "What is dynamic RAM refresh cycle?", options: ["Process of periodically reading and rewriting capacitor charges in DRAM before data leaks away", "Clock reset", "Power on test", "Disk defragmentation"], correct: 0, hint: "DRAM capacitors lose charge and require continuous refreshing." },
+                    { q: "What is error-correcting code (ECC) memory?", options: ["Memory using Hamming codes to automatically detect and correct single-bit memory bit flips", "Flash drive", "ROM", "Cache"], correct: 0, hint: "ECC memory ensures high reliability in servers." },
+                    { q: "What is memory interleaving?", options: ["Dividing memory across multiple banks to allow simultaneous parallel access and higher throughput", "Slowing down memory", "Deleting data", "Multiplexing displays"], correct: 0, hint: "Interleaving speeds up sequential memory bandwidth." },
+                    { q: "What is content-addressable memory (CAM)?", options: ["Specialized memory type that searches stored data in a single clock cycle based on input content rather than address", "Standard RAM", "ROM lookup", "Hard drive"], correct: 0, hint: "CAMs perform parallel lookups (used in network routers for packet forwarding)." },
+                    { q: "What is dual-port RAM?", options: ["RAM chip with two independent sets of address and data buses allowing simultaneous read/write access from two controllers", "Single port RAM", "ROM", "Flash"], correct: 0, hint: "Dual-port RAM enables inter-processor communication." },
+                    { q: "What is mask ROM?", options: ["Read-only memory programmed permanently during semiconductor manufacturing photolithography", "Reprogrammable Flash", "EPROM", "Volatile RAM"], correct: 0, hint: "Mask ROM cannot be changed after fabrication." },
+                    { q: "What is anti-fuse programming in FPGAs/PROMs?", options: ["Permanent creation of low-resistance conducting paths across insulating layers by applying high programming voltage", "Blowing a fuse open", "UV erasure", "Capacitor charge"], correct: 0, hint: "Anti-fuses connect circuits permanently once programmed." },
+                    { q: "What is core memory (historical)?", options: ["Early computer memory using tiny magnetic ferrite rings strung on wire grids", "Silicon RAM", "Optical disc", "Magnetic tape"], correct: 0, hint: "Magnetic core memory retained data without power (non-volatile ancestor of RAM)." },
+                    { q: "What is non-volatile memory (NVM)?", options: ["Memory that retains stored data even when electrical power is turned off", "DRAM", "SRAM cache", "Volatile register"], correct: 0, hint: "Flash, EEPROM, and ROM are non-volatile." }
+                ]
+            },
+            {
+                title: "Mod 10: Computer Systems, Interfacing & Microcontrollers",
+                questions: [
+                    { q: "What are the three core structural units of a basic computer system?", options: ["CPU, Memory, Input/Output (I/O)", "Monitor, Keyboard, Mouse", "Adder, Register, Decoder", "Power supply, Motherboard, Fan"], correct: 0, hint: "Von Neumann architecture core: CPU, Memory, I/O." },
+                    { q: "What are the two primary components inside a CPU?", options: ["ALU (Arithmetic Logic Unit) and Control Unit (CU)", "RAM and ROM", "Encoder and Decoder", "Registers and Display"], correct: 0, hint: "ALU does math/logic; CU directs instruction execution." },
+                    { q: "What is the standard execution cycle of a computer processor?", options: ["Fetch, Decode, Execute", "Input, Process, Output", "Read, Write, Store", "Load, Shift, Add"], correct: 0, hint: "CPU fetches instruction, decodes it, then executes it." },
+                    { q: "What is address decoding in computer systems?", options: ["Logic circuitry that selects a specific memory chip or I/O device based on address bus values", "Translating code into English", "Encrypting data", "Counting clock pulses"], correct: 0, hint: "Address decoders map memory address ranges to physical chips." },
+                    { q: "What is a bus in computer hardware?", options: ["A shared communication pathway (wires) connecting CPU, memory, and peripherals", "A cooling fan", "A power cable", "A software driver"], correct: 0, hint: "System buses include Address Bus, Data Bus, and Control Bus." },
+                    { q: "What is UART used for in computer systems?", options: ["Asynchronous serial communication between computer and peripheral devices", "Parallel printing", "Displaying video", "Generating audio"], correct: 0, hint: "Universal Asynchronous Receiver-Transmitter handles serial links." },
+                    { q: "What is a Microcontroller (MCU)?", options: ["A compact integrated circuit designed to govern a specific operation in an embedded system (CPU+RAM+ROM+I/O on one chip)", "A mainframe computer", "A broken CPU", "A large memory bank"], correct: 0, hint: "Microcontrollers integrate a whole computer system onto a single chip." },
+                    { q: "What is a PLC (Programmable Logic Controller)?", options: ["Ruggedized industrial digital computer used for automation in manufacturing plants", "Personal laptop computer", "Power logic counter", "Printer control unit"], correct: 0, hint: "PLCs control industrial machinery reliably." },
+                    { q: "What is Digital Signal Processing (DSP)?", options: ["Specialized microprocessor optimized for measuring, filtering, or compressing continuous real-world analog signals", "Standard text processing", "General gaming CPU", "Power regulation"], correct: 0, hint: "DSPs excel at math-heavy audio/video signal processing." },
+                    { q: "What is the function of the Program Counter (PC) register in a CPU?", options: ["Stores the memory address of the next instruction to be fetched", "Counts total programs run", "Stores calculation results", "Holds input data"], correct: 0, hint: "PC keeps track of execution flow." },
+                    { q: "What is a USB interface?", options: ["Universal Serial Bus for standardized high-speed peripheral connection and power delivery", "Parallel port", "Audio jack", "Video output"], correct: 0, hint: "USB replaced legacy serial/parallel ports." },
+                    { q: "What is the purpose of interrupt handling in computer systems?", options: ["Allowing peripheral devices to signal the CPU to pause current tasks and handle urgent events", "Crashing the computer", "Saving power", "Clearing memory"], correct: 0, hint: "Interrupts allow asynchronous event servicing." },
+                    { q: "What is memory-mapped I/O?", options: ["A scheme where I/O devices share the same address space as system memory", "I/O stored on hard drive only", "Screen memory", "Cache memory"], correct: 0, hint: "CPU communicates with I/O using standard memory load/store instructions." },
+                    { q: "What is clock speed in a microprocessor?", options: ["The frequency (Hz) at which the CPU internal clock pulses, dictating instruction execution pace", "Internet speed", "Hard drive speed", "Fan rotation speed"], correct: 0, hint: "GHz frequency measures clock cycles per second." },
+                    { q: "What is Harvard architecture?", options: ["Computer architecture with physically separate storage and signal pathways for instructions and data", "Single bus architecture", "Memory-less architecture", "Graphics-only architecture"], correct: 0, hint: "Harvard architecture separates instruction and data memory buses." },
+                    { 
+                        q: "Analyze the microcontroller system bus architecture diagram below. Which bus carries memory addresses generated by the CPU program counter?", 
+                        visual: `<svg width="340" height="100" viewBox="0 0 340 100">
+                            <rect x="20" y="20" width="80" height="60" fill="#1f2937" stroke="#3b82f6" stroke-width="2"/>
+                            <text x="40" y="55" fill="#f3f4f6" font-size="12">CPU</text>
+                            <line x1="100" y1="40" x2="220" y2="40" stroke="#f59e0b" stroke-width="2"/>
+                            <text x="130" y="30" fill="#f59e0b" font-size="12">Address Bus</text>
+                            <rect x="220" y="20" width="80" height="60" fill="#1f2937" stroke="#10b981" stroke-width="2"/>
+                            <text x="240" y="55" fill="#f3f4f6" font-size="12">Memory</text>
+                        </svg>`,
+                        options: ["Address Bus ( unidirectional from CPU to Memory )", "Data Bus (bidirectional)", "Control Bus", "Power Bus"], 
+                        correct: 0, 
+                        hint: "The address bus specifies memory locations targeted for read/write operations." 
+                    },
+                    { q: "What is Direct Memory Access (DMA)?", options: ["Hardware feature allowing peripherals (e.g., disk drive) to transfer data directly to/from RAM without CPU intervention", "Direct CPU control", "Slow transfer", "Manual copy"], correct: 0, hint: "DMA offloads heavy data transfers from the CPU." },
+                    { q: "What is SPI (Serial Peripheral Interface)?", options: ["Synchronous four-wire serial communication protocol (SCLK, MOSI, MISO, SS) for short-distance IC communication", "Asynchronous UART", "USB cable", "Parallel bus"], correct: 0, hint: "SPI is a fast synchronous serial bus." },
+                    { q: "What is I2C (Inter-Integrated Circuit) protocol?", options: ["Synchronous two-wire serial bus (SDA and SCL) using device addresses for multi-drop IC communication", "Four-wire SPI", "Parallel printer cable", "Ethernet"], correct: 0, hint: "I2C uses only Serial Data (SDA) and Serial Clock (SCL) lines." },
+                    { q: "What is an Analog-to-Digital Converter (ADC)?", options: ["Circuit that samples continuous analog voltage signals and converts them into digital binary numbers", "DAC", "Amplifier", "Display driver"], correct: 0, hint: "ADCs bridge the physical analog world to digital processors." },
+                    { q: "What is a Digital-to-Analog Converter (DAC)?", options: ["Circuit that converts digital binary words into continuous analog voltages or currents", "ADC", "Counter", "Multiplexer"], correct: 0, hint: "DACs output analog waveforms from digital data." },
+                    { q: "What is pulse-width modulation (PWM)?", options: ["Technique of varying the width of digital pulse waves to control average power delivered to motors or dim LEDs", "Voltage scaling", "Frequency modulation", "Phase inversion"], correct: 0, hint: "PWM controls effective analog power digitally." },
+                    { q: "What is a watchdog timer in microcontrollers?", options: ["An electronic timer that automatically resets the microcontroller system if software hangs or enters an infinite loop", "Alarm clock", "Clock divider", "Battery monitor"], correct: 0, hint: "Watchdog timers ensure embedded system reliability." },
+                    { q: "What is a General-Purpose Input/Output (GPIO) pin?",options: ["Configurable digital pin on an MCU that can act as a digital input or output under software control", "Dedicated power pin", "Analog sensor", "Crystal oscillator"], correct: 0, hint: "GPIO pins interface external switches, LEDs, and sensors." },
+                    { q: "What is an RS-232 serial communication standard?", options: ["Legacy single-ended serial interface standard using voltage levels (+3V to +15V for 0, -3V to -15V for 1)", "High-speed USB", "Ethernet", "Fiber optic"], correct: 0, hint: "RS-232 was standard for serial PC connections." },
+                    { q: "What is CAN bus (Controller Area Network)?", options: ["Robust vehicle and industrial serial bus designed for microcontroller communication without a host computer", "USB protocol", "Wi-Fi router", "Audio cable"], correct: 0, hint: "CAN bus links automotive ECUs reliably." },
+                    { q: "What is a stack memory in CPU architecture?", options: ["LIFO (Last-In, First-Out) memory structure used for subroutine return addresses and local variables", "FIFO queue", "ROM storage", "Cache array"], correct: 0, hint: "The CPU stack handles function calls via push/pop operations." },
+                    { q: "What is an interrupt service routine (ISR)?", options: ["Specialized software function executed automatically by the CPU when a hardware or software interrupt occurs", "Main program loop", "Boot loader", "Clock routine"], correct: 0, hint: "ISRs handle asynchronous asynchronous events." },
+                    { q: "What is RISC vs CISC processor architecture?", options: ["RISC uses simple fixed-length instructions; CISC uses complex variable-length instructions", "RISC is slower", "CISC has no RAM", "No difference"], correct: 0, hint: "RISC (ARM, RISC-V) and CISC (x86) represent distinct design philosophies." },
+                    { q: "Why is hardware description language (HDL like Verilog or VHDL) used today?", options: ["To design, simulate, and synthesize complex digital circuits and FPGA hardware configs programmatically", "To write web pages", "To format documents", "To compile Python"], correct: 0, hint: "HDLs replaced manual schematic entry for modern ASIC and FPGA engineering." }
+                ]
+            }
+        ];
+
+        let currentModule = 0;
+        let currentQuestion = 0;
+        let userAnswers = {}; // { modIdx: { qIdx: selectedOpt } }
+        let flaggedQuestions = {}; // { modIdx: { qIdx: true } }
+        let secondsElapsed = 0;
+        let timerInterval;
+
+        // Initialize App
+        function init() {
+            renderModulesList();
+            loadQuestion(0, 0);
+            startTimer();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                let mins = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+                let secs = (secondsElapsed % 60).toString().padStart(2, '0');
+                document.getElementById('timer').innerText = `Time: ${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            document.getElementById('theme-icon').innerText = newTheme === 'dark' ? '☀️' : '🌙';
+            document.getElementById('theme-text').innerText = newTheme === 'dark' ? 'Light' : 'Dark';
+        }
+
+        function renderModulesList() {
+            const container = document.getElementById('modules-list');
+            container.innerHTML = '';
+            let totalAnsweredCount = 0;
+            let totalQuestionsCount = 0;
+
+            quizData.forEach((mod, idx) => {
+                let modAnswers = userAnswers[idx] || {};
+                let answeredCount = Object.keys(modAnswers).length;
+                totalAnsweredCount += answeredCount;
+                totalQuestionsCount += mod.questions.length;
+
+                const card = document.createElement('div');
+                card.className = `module-card ${idx === currentModule ? 'active' : ''}`;
+                card.onclick = () => switchModule(idx);
+                card.innerHTML = `
+                    <div class="module-title">${mod.title}</div>
+                    <div class="module-status">${answeredCount} / ${mod.questions.length} answered</div>
+                `;
+                container.appendChild(card);
+            });
+
+            document.getElementById('overall-progress').innerText = `${totalAnsweredCount} / ${totalQuestionsCount}`;
+        }
+
+        function switchModule(modIdx) {
+            currentModule = modIdx;
+            currentQuestion = 0;
+            renderModulesList();
+            loadQuestion(currentModule, currentQuestion);
+        }
+
+        function loadQuestion(modIdx, qIdx) {
+            currentModule = modIdx;
+            currentQuestion = qIdx;
+            const qData = quizData[modIdx].questions[qIdx];
+
+            document.getElementById('q-num-badge').innerText = `Question ${qIdx + 1}`;
+            document.getElementById('question-text').innerText = qData.q;
+            document.getElementById('progress-indicator').innerText = `Question ${qIdx + 1} of ${quizData[modIdx].questions.length}`;
+
+            // Visual container handling
+            const visualContainer = document.getElementById('visual-container');
+            if (qData.visual) {
+                visualContainer.innerHTML = qData.visual;
+                visualContainer.style.display = 'flex';
+            } else {
+                visualContainer.innerHTML = '';
+                visualContainer.style.display = 'none';
+            }
+
+            // Flag checkbox state
+            const isFlagged = flaggedQuestions[modIdx] && flaggedQuestions[modIdx][qIdx];
+            document.getElementById('flag-checkbox').checked = !!isFlagged;
+
+            // Options
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            const savedAnswer = userAnswers[modIdx] && userAnswers[modIdx][qIdx];
+            const isAnswered = savedAnswer !== undefined;
+
+            const statusText = document.getElementById('q-status-text');
+            const hintBox = document.getElementById('hint-container');
+
+            if (isAnswered) {
+                statusText.innerHTML = `Answered<br>Marked ${savedAnswer === qData.correct ? '1.00' : '0.00'} out of 1.00`;
+                hintBox.innerText = `💡 Hint: ${qData.hint}`;
+                hintBox.style.display = 'block';
+            } else {
+                statusText.innerHTML = `Not yet answered<br>Marked 0.00 out of 1.00`;
+                hintBox.style.display = 'none';
+            }
+
+            qData.options.forEach((opt, optIdx) => {
+                const btn = document.createElement('div');
+                btn.className = 'option-btn';
+                
+                if (isAnswered) {
+                    if (optIdx === qData.correct) {
+                        btn.classList.add('correct');
+                    } else if (optIdx === savedAnswer) {
+                        btn.classList.add('incorrect');
+                    }
+                } else if (savedAnswer === optIdx) {
+                    btn.classList.add('selected');
+                }
+
+                btn.onclick = () => selectOption(optIdx);
+                btn.innerHTML = `
+                    <div class="option-letter">${String.fromCharCode(65 + optIdx)}</div>
+                    <div>${opt}</div>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+
+            // Nav buttons
+            document.getElementById('prev-btn').disabled = (qIdx === 0 && modIdx === 0);
+            document.getElementById('next-btn').innerText = (modIdx === quizData.length - 1 && qIdx === quizData[modIdx].questions.length - 1) ? 'Finish' : 'Next';
+        }
+
+        function selectOption(optIdx) {
+            const qData = quizData[currentModule].questions[currentQuestion];
+            if (!userAnswers[currentModule]) {
+                userAnswers[currentModule] = {};
+            }
+            if (userAnswers[currentModule][currentQuestion] !== undefined) return; // already answered
+
+            userAnswers[currentModule][currentQuestion] = optIdx;
+
+            renderModulesList();
+            loadQuestion(currentModule, currentQuestion);
+        }
+
+        function toggleFlag() {
+            const isChecked = document.getElementById('flag-checkbox').checked;
+            if (!flaggedQuestions[currentModule]) {
+                flaggedQuestions[currentModule] = {};
+            }
+            flaggedQuestions[currentModule][currentQuestion] = isChecked;
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion(currentModule, currentQuestion);
+            } else if (currentModule > 0) {
+                currentModule--;
+                currentQuestion = quizData[currentModule].questions.length - 1;
+                renderModulesList();
+                loadQuestion(currentModule, currentQuestion);
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizData[currentModule].questions.length - 1) {
+                currentQuestion++;
+                loadQuestion(currentModule, currentQuestion);
+            } else if (currentModule < quizData.length - 1) {
+                currentModule++;
+                currentQuestion = 0;
+                renderModulesList();
+                loadQuestion(currentModule, currentQuestion);
+            } else {
+                alert("Congratulations! You have completed the comprehensive 300-question DLD circuit exam!");
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
